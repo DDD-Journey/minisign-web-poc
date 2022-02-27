@@ -19,4 +19,10 @@ class MinisignRunnerTest {
         String version = subject.version();
         assertThat(version).contains("minisign 0.10");
     }
+
+    @Test
+    void verifyFile() {
+        String output = subject.verify();
+        assertThat(output).contains("Signature and comment signature verified");
+    }
 }
