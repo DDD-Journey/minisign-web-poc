@@ -19,11 +19,18 @@ public class MinisignRunner {
 
     @SneakyThrows
     public String verify() {
-        String[] args = new String[]{"minisign", "-Vm", "src/test/resources/minisign/test_payload_file.txt", "-p", "src/test/resources/minisign/minisign_public_key.pub"};
 
         File outputLogFile = File.createTempFile("output", "log");
         File inputLogFile = File.createTempFile("input", "log");
         File errorLogFile = File.createTempFile("error", "log");
+
+        String[] args = new String[]{
+                "minisign",
+                "-Vm",
+                "src/test/resources/minisign/test_payload_file.txt",
+                "-p",
+                "src/test/resources/minisign/minisign_public_key.pub"
+        };
 
         ProcessBuilder processBuilder = new ProcessBuilder(args)
                 .redirectOutput(outputLogFile)
