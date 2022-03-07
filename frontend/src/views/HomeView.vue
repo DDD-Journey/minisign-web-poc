@@ -1,7 +1,6 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <MainContainer msg="Welcome to Minisign-Web PoC"/>
+    <main-container msg="Welcome to Minisign-Web PoC" />
   </div>
 </template>
 

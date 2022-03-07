@@ -1,13 +1,14 @@
 <template>
-  <div class="hello">
+  <div>
     <h1>{{ msg }}</h1>
     <p>
-      For the Project Repository,<br>
-      check out the
-      <a href="https://github.com/DDD-Journey/minisign-web-poc" target="_blank" rel="noopener">Github Project of the Minisign-Web PoC</a>.
+      Choose one of the action below by clicking on it.
     </p>
-    <h3>First Vue Component to Upload a file</h3>
-    <file-upload />
+    <div class="actionBox">
+      <div class="action"><router-link to="/create">Create a key pair</router-link></div>
+      <div class="action"><router-link to="/sign">Sign a document</router-link></div>
+      <div class="action"><router-link to="/verify">Verify a document signing</router-link></div>
+    </div>
   </div>
 </template>
 
@@ -23,15 +24,34 @@ import FileUpload from "@/components/FileUpload.vue";
     msg: String
   }
 })
-export default class HelloWorld extends Vue {
+export default class MainContainer extends Vue {
   msg!: string;
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
+.actionBox {
+  display: flex;
+  justify-content: center;
+  align-content: space-between;
+  column-gap: 6em;
+  padding-top: 50px;
+}
+.action {
+  padding: 10px;
+  height: 100px;
+  width: 200px;
+  border: solid 1px lightgray;
+  box-shadow: 5px 5px 10px silver;
+  border-radius: 10px;
+  background-color: cornsilk;
+  text-align: center;
+  justify-content: center;
+}
+h1 {
   margin: 40px 0 0;
+  text-shadow: 3px 3px 4px #777
 }
 a {
   color: #42b983;

@@ -15,7 +15,6 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-
 export default class FileUpload extends Vue {
   files = null;
 
@@ -28,6 +27,7 @@ export default class FileUpload extends Vue {
   }
 }
 </script>
+
 <style scoped lang="scss">
 h4 {
   margin: 40px 0 0;

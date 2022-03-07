@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import CreateKeyPair from "@/components/CreateKeyPair.vue";
+import SignDocument from "@/components/SignDocument.vue";
+import VerifyDocument from "@/components/VerifyDocument.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,6 +17,21 @@ const routes: Array<RouteRecordRaw> = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  },
+  {
+    path: '/create',
+    name: 'createKeyPair',
+    component: CreateKeyPair
+  },
+  {
+    path: '/sign',
+    name: 'signDocument',
+    component: SignDocument
+  },
+  {
+    path: '/verify',
+    name: 'verifyDocument',
+    component: VerifyDocument
   }
 ]
 

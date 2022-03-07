@@ -1,5 +1,9 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <p>
+      For the Project Repository,<br>
+      check out the
+      <a href="https://github.com/DDD-Journey/minisign-web-poc" target="_blank" rel="noopener">Github Project of the Minisign-Web PoC</a>.
+    </p>
   </div>
 </template>
