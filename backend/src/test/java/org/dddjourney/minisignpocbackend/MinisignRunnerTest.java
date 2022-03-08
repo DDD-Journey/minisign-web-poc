@@ -25,4 +25,9 @@ class MinisignRunnerTest {
         String output = subject.verify();
         assertThat(output).contains("Signature and comment signature verified");
     }
+
+    @Test
+    void signFile() {
+        String output = subject.sign("test123");
+    }
 }
