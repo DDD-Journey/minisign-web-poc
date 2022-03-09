@@ -5,9 +5,9 @@
       Choose one of the action below by clicking on it.
     </p>
     <div class="actionBox">
-      <div class="action"><router-link to="/create">Create a key pair</router-link></div>
-      <div class="action"><router-link to="/sign">Sign a document</router-link></div>
-      <div class="action"><router-link to="/verify">Verify a document signing</router-link></div>
+      <router-link to="/create">Create a key pair</router-link>
+      <router-link to="/sign">Sign a document</router-link>
+      <router-link to="/verify">Verify a document signing</router-link>
     </div>
   </div>
 </template>
@@ -53,7 +53,20 @@ h1 {
   margin: 40px 0 0;
   text-shadow: 3px 3px 4px #777
 }
-a {
+a:link, a:visited {
+  display: block;
+  padding: 10px;
+  height: 100px;
+  width: 200px;
   color: #42b983;
+  border: solid 1px lightgray;
+  box-shadow: 5px 5px 10px silver;
+  border-radius: 10px;
+  background-color: cornsilk;
+  text-align: center;
+  text-decoration: none;
+}
+a:hover, a:active {
+  box-shadow: 5px 5px 10px silver inset;
 }
 </style>
