@@ -14,11 +14,9 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import FileUpload from "@/components/FileUpload.vue";
 
 @Options({
   components: {
-    FileUpload,
   },
   props: {
     msg: String
@@ -37,17 +35,6 @@ export default class MainContainer extends Vue {
   align-content: space-between;
   column-gap: 6em;
   padding-top: 50px;
-}
-.action {
-  padding: 10px;
-  height: 100px;
-  width: 200px;
-  border: solid 1px lightgray;
-  box-shadow: 5px 5px 10px silver;
-  border-radius: 10px;
-  background-color: cornsilk;
-  text-align: center;
-  justify-content: center;
 }
 h1 {
   margin: 40px 0 0;
