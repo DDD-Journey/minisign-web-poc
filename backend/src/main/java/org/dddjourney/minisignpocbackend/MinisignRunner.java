@@ -1,14 +1,18 @@
 package org.dddjourney.minisignpocbackend;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
+@Slf4j
 public class MinisignRunner {
 
     @SneakyThrows
@@ -54,66 +58,55 @@ public class MinisignRunner {
                 "src/test/resources/minisign/minisign_secret_key.key"
         };
 
-        ProcessBuilder processBuilder = new ProcessBuilder(args);
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command(args);
 
-        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-
+//        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
+//        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+//        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
+//
         Process process = processBuilder.start();
+//
+//        InputStream errorStream = process.getErrorStream();
+//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
+//        InputStream inputStream = process.getInputStream();
+//        BufferedReader inputReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        InputStream errStream = process.getErrorStream();
-        InputStream inStream = process.getInputStream();
-        OutputStream outStream = process.getOutputStream();
+        StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
+        Executors.newSingleThreadExecutor().submit(streamGobbler);
 
-        PrintStream out = new PrintStream(new BufferedOutputStream(outStream));
+//        log.debug("Error: {}", errorReader.readLine());
+//        log.debug("Input: {}", inputReader.readLine());
+//        //new Thread(new StreamGobbler(inputStream, outputStream, password)).start();
+//
+        OutputStream outputStream = process.getOutputStream();
+        PrintWriter outputWriter = new PrintWriter(outputStream);
+        outputWriter.println(password);
+        outputWriter.flush();
+        log.debug("Password written to terminal!");
 
-        new Thread(new StreamGobbler("err", out, errStream)).start();
-
-        Callback cb = line -> {
-            if (line.contains("Password:")) {
-                out.println(password);
-                out.flush();
-            }
-        };
-        new Thread(new StreamGobbler("in", out, inStream, cb)).start();
         boolean exited = process.waitFor(5, TimeUnit.SECONDS);
-        System.out.println("Process exited normal: " + exited);
+
+        log.debug("Process exited by itself: {}", exited);
+        log.debug("Process exited with code: {}", process.exitValue());
 
         return "";
     }
 
-    interface Callback {
-        void onNextLine(String line);
-    }
 
-    static class StreamGobbler implements Runnable {
-        private PrintStream out;
-        private Scanner inScanner;
-        private String name;
-        private Callback cb;
+    private static class StreamGobbler implements Runnable {
+        private InputStream inputStream;
+        private Consumer<String> consumer;
 
-        public StreamGobbler(String name, PrintStream out, InputStream inStream) {
-            this.name = name;
-            this.out = out;
-            inScanner = new Scanner(new BufferedInputStream(inStream));
-        }
-
-        public StreamGobbler(String name, PrintStream out, InputStream inStream, Callback cb) {
-            this.name = name;
-            this.out = out;
-            inScanner = new Scanner(new BufferedInputStream(inStream));
-            this.cb = cb;
+        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
+            this.inputStream = inputStream;
+            this.consumer = consumer;
         }
 
         @Override
         public void run() {
-            while (inScanner.hasNextLine()) {
-                String line = inScanner.nextLine();
-                if (cb != null)
-                    cb.onNextLine(line);
-                System.out.printf("%s: %s%n", name, line);
-            }
+            new BufferedReader(new InputStreamReader(inputStream)).lines()
+                    .forEach(consumer);
         }
     }
 }
