@@ -62,24 +62,14 @@ public class MinisignRunner {
         processBuilder.command(args);
 
         Process process = processBuilder.start();
-//
-//        InputStream errorStream = process.getErrorStream();
-//        BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
-
 
         StreamGobbler inputStreamGobbler = new StreamGobbler(process.getInputStream(), log::debug);
         Executors.newSingleThreadExecutor().submit(inputStreamGobbler);
+
         StreamGobbler errorStreamGobbler = new StreamGobbler(process.getErrorStream(), log::error);
         Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
 
-//        log.debug("Error: {}", errorReader.readLine());
-//        log.debug("Input: {}", inputReader.readLine());
-//        //new Thread(new StreamGobbler(inputStream, outputStream, password)).start();
-//
-        OutputStream outputStream = process.getOutputStream();
-        PrintWriter outputWriter = new PrintWriter(outputStream);
-        outputWriter.println(password);
-        outputWriter.flush();
+        writeTextToTerminal(password, process.getOutputStream());
 
         log.debug("Password written to terminal!");
 
@@ -91,5 +81,9 @@ public class MinisignRunner {
         return "";
     }
 
-
+    private void writeTextToTerminal(String text, OutputStream outputStream) {
+        PrintWriter outputWriter = new PrintWriter(outputStream);
+        outputWriter.println(text);
+        outputWriter.flush();
+    }
 }
