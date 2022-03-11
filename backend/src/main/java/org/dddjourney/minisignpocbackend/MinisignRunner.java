@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 @Slf4j
 public class MinisignRunner {
@@ -61,19 +61,16 @@ public class MinisignRunner {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(args);
 
-//        processBuilder.redirectInput(ProcessBuilder.Redirect.INHERIT);
-//        processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-//        processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-//
         Process process = processBuilder.start();
 //
 //        InputStream errorStream = process.getErrorStream();
 //        BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
-//        InputStream inputStream = process.getInputStream();
-//        BufferedReader inputReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-        Executors.newSingleThreadExecutor().submit(streamGobbler);
+
+        StreamGobbler inputStreamGobbler = new StreamGobbler(process.getInputStream(), log::debug);
+        Executors.newSingleThreadExecutor().submit(inputStreamGobbler);
+        StreamGobbler errorStreamGobbler = new StreamGobbler(process.getErrorStream(), log::error);
+        Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
 
 //        log.debug("Error: {}", errorReader.readLine());
 //        log.debug("Input: {}", inputReader.readLine());
@@ -83,6 +80,7 @@ public class MinisignRunner {
         PrintWriter outputWriter = new PrintWriter(outputStream);
         outputWriter.println(password);
         outputWriter.flush();
+
         log.debug("Password written to terminal!");
 
         boolean exited = process.waitFor(5, TimeUnit.SECONDS);
@@ -94,19 +92,4 @@ public class MinisignRunner {
     }
 
 
-    private static class StreamGobbler implements Runnable {
-        private InputStream inputStream;
-        private Consumer<String> consumer;
-
-        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-            this.inputStream = inputStream;
-            this.consumer = consumer;
-        }
-
-        @Override
-        public void run() {
-            new BufferedReader(new InputStreamReader(inputStream)).lines()
-                    .forEach(consumer);
-        }
-    }
 }
