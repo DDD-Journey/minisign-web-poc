@@ -16,46 +16,67 @@ import java.util.concurrent.TimeUnit;
 public class MinisignRunner {
 
     @SneakyThrows
-    public String version() {
-        String[] args = new String[]{"minisign", "-v"};
-        Process process = new ProcessBuilder(args).start();
-        return IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+    public ProcessResult version() {
+
+        Process process = new ProcessBuilder("minisign", "-v").start();
+
+        boolean exitedGraceful = wait(process);
+
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+
+        ProcessResult processResult = ProcessResult.builder()
+                .output(output)
+                .exitedGraceful(exitedGraceful)
+                .exitValue(process.exitValue())
+                .build();
+
+        log.debug("Process result: {}", processResult);
+
+        return processResult;
     }
 
     @SneakyThrows
-    public String verify() {
+    public ProcessResult verify(String payloadFile, String publicKeyFile) {
 
         File outputLogFile = File.createTempFile("output", "log");
         File inputLogFile = File.createTempFile("input", "log");
         File errorLogFile = File.createTempFile("error", "log");
 
-        String[] args = new String[]{
+        String[] command = new String[]{
                 "minisign",
                 "-Vm",
-                "src/test/resources/minisign/test_payload_file.txt",
+                payloadFile,
                 "-p",
-                "src/test/resources/minisign/minisign_public_key.pub"
+                publicKeyFile
         };
 
-        ProcessBuilder processBuilder = new ProcessBuilder(args)
+        Process process = new ProcessBuilder(command)
                 .redirectOutput(outputLogFile)
                 .redirectInput(inputLogFile)
-                .redirectError(errorLogFile);
-        Process process = processBuilder.start();
-        process.waitFor(5, TimeUnit.SECONDS);
+                .redirectError(errorLogFile)
+                .start();
 
-        return FileUtils.readFileToString(outputLogFile, StandardCharsets.UTF_8);
+        boolean exitedGraceful = wait(process);
+
+        String output = FileUtils.readFileToString(outputLogFile, StandardCharsets.UTF_8);
+
+        return ProcessResult.builder()
+                .output(output)
+                .exitedGraceful(exitedGraceful)
+                .build();
     }
 
     @SneakyThrows
-    public String sign(String password) {
+    public ProcessResult sign(String password, String payloadFile, String secretKeyFile, String signatureFile) {
 
         String[] args = new String[]{
                 "minisign",
                 "-Sm",
-                "src/test/resources/minisign/test_payload_file.txt",
+                payloadFile,
                 "-s",
-                "src/test/resources/minisign/minisign_secret_key.key"
+                secretKeyFile,
+                "-x",
+                signatureFile
         };
 
         ProcessBuilder processBuilder = new ProcessBuilder();
@@ -71,19 +92,28 @@ public class MinisignRunner {
 
         writeTextToTerminal(password, process.getOutputStream());
 
-        log.debug("Password written to terminal!");
+        boolean exitedGraceful = wait(process);
 
-        boolean exited = process.waitFor(5, TimeUnit.SECONDS);
-
-        log.debug("Process exited by itself: {}", exited);
+        log.debug("Process exited by itself: {}", exitedGraceful);
         log.debug("Process exited with code: {}", process.exitValue());
 
-        return "";
+        ProcessResult processResult = ProcessResult.builder()
+                .exitValue(process.exitValue())
+                .exitedGraceful(exitedGraceful)
+                .build();
+
+        log.debug("Process result: {}", processResult);
+        return processResult;
     }
 
     private void writeTextToTerminal(String text, OutputStream outputStream) {
         PrintWriter outputWriter = new PrintWriter(outputStream);
         outputWriter.println(text);
         outputWriter.flush();
+        log.debug("Password written to terminal!");
+    }
+
+    private boolean wait(Process process) throws InterruptedException {
+        return process.waitFor(5, TimeUnit.SECONDS);
     }
 }

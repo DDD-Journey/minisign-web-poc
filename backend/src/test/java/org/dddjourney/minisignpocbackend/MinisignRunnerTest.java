@@ -1,11 +1,22 @@
 package org.dddjourney.minisignpocbackend;
 
+import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MinisignRunnerTest {
+
+    static final String TEST_PASSWORD = "test123";
+    static final int EXIT_VALUE_SUCCESS = 0;
 
     MinisignRunner subject;
 
@@ -16,18 +27,52 @@ class MinisignRunnerTest {
 
     @Test
     void runVersion() {
-        String version = subject.version();
-        assertThat(version).contains("minisign 0.10");
+        // when
+        ProcessResult processResult = subject.version();
+
+        // then
+        assertThat(processResult.getOutput()).contains("minisign 0.10");
+        assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(processResult.isExitedGraceful()).isTrue();
     }
 
     @Test
     void verifyFile() {
-        String output = subject.verify();
-        assertThat(output).contains("Signature and comment signature verified");
+        // given
+        String payloadFile = "src/test/resources/minisign/test_payload_file.txt";
+        String publicKeyFile = "src/test/resources/minisign/minisign_public_key.pub";
+
+        // when
+        ProcessResult processResult = subject.verify(payloadFile, publicKeyFile);
+
+        // then
+        assertThat(processResult.getOutput()).contains("Signature and comment signature verified");
+        assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(processResult.isExitedGraceful()).isTrue();
     }
 
     @Test
-    void signFile() {
-        String output = subject.sign("test123");
+    @SneakyThrows
+    void signFile(@TempDir Path tempDir) {
+        // given
+        String payloadFile = "src/test/resources/minisign/test_payload_file.txt";
+        String secretKeyFile = "src/test/resources/minisign/minisign_secret_key.key";
+        String signatureFile = buildFilePathString(tempDir, "test_payload_file.txt.minisig");
+
+        // when
+        ProcessResult processResult = subject.sign(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
+
+        // then
+        assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(processResult.isExitedGraceful()).isTrue();
+        assertThat(readFile(signatureFile)).contains("file:test_payload_file.txt");
+    }
+
+    private String buildFilePathString(Path tempDir, String fileName) {
+        return tempDir.toString() + "/" + fileName;
+    }
+
+    private String readFile(String signatureFile) throws IOException {
+        return FileUtils.readFileToString(new File(signatureFile), StandardCharsets.UTF_8);
     }
 }
