@@ -43,7 +43,7 @@ class MinisignRunnerTest {
         String publicKeyFile = "src/test/resources/minisign/minisign_public_key.pub";
 
         // when
-        ProcessResult processResult = subject.verify(payloadFile, publicKeyFile);
+        ProcessResult processResult = subject.verifyFile(payloadFile, publicKeyFile);
 
         // then
         assertThat(processResult.getOutput()).contains("Signature and comment signature verified");
@@ -60,12 +60,13 @@ class MinisignRunnerTest {
         String signatureFile = buildFilePathString(tempDir, "test_payload_file.txt.minisig");
 
         // when
-        ProcessResult processResult = subject.sign(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
+        ProcessResult processResult = subject.signFile(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
 
         // then
         assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
         assertThat(processResult.isExitedGraceful()).isTrue();
         assertThat(readFile(signatureFile)).contains("file:test_payload_file.txt");
+        assertThat(processResult.getOutput()).isEqualTo("done");
     }
 
     private String buildFilePathString(Path tempDir, String fileName) {
