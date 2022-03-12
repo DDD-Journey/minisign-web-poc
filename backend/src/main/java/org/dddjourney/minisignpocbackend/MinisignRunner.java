@@ -83,7 +83,7 @@ public class MinisignRunner {
 
         logProcessFeedback(process);
         logProcessErrors(process);
-        StringBuffer processInputBuffer = bufferProcessFeedabck(process);
+        StringBuffer processInputBuffer = bufferProcessFeedback(process);
 
         writeTextToTerminal(password, process.getOutputStream());
 
@@ -109,7 +109,7 @@ public class MinisignRunner {
         Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
     }
 
-    private StringBuffer bufferProcessFeedabck(Process process) {
+    private StringBuffer bufferProcessFeedback(Process process) {
         StringBuffer processInputBuffer = new StringBuffer();
         Executors.newSingleThreadExecutor().submit(new StreamGobbler(process.getInputStream(), processInputBuffer::append));
         return processInputBuffer;
