@@ -66,7 +66,7 @@ class MinisignRunnerTest {
         assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
         assertThat(processResult.isExitedGraceful()).isTrue();
         assertThat(readFile(signatureFile)).contains("file:test_payload_file.txt");
-        assertThat(processResult.getOutput()).isEqualTo("done");
+        assertThat(processResult.getOutput()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
     }
 
     private String buildFilePathString(Path tempDir, String fileName) {

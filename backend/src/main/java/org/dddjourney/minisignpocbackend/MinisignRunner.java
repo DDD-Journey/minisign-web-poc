@@ -2,10 +2,8 @@ package org.dddjourney.minisignpocbackend;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -20,12 +18,13 @@ public class MinisignRunner {
 
         Process process = new ProcessBuilder("minisign", "-v").start();
 
+        StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
+        logProcessErrors(process);
+
         boolean exitedGraceful = waitForCompletion(process);
 
-        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
-
         ProcessResult processResult = ProcessResult.builder()
-                .output(output)
+                .output(processFeedbackBuffer.toString())
                 .exitedGraceful(exitedGraceful)
                 .exitValue(process.exitValue())
                 .build();
@@ -38,10 +37,6 @@ public class MinisignRunner {
     @SneakyThrows
     public ProcessResult verifyFile(String payloadFile, String publicKeyFile) {
 
-        File outputLogFile = File.createTempFile("output", "log");
-        File inputLogFile = File.createTempFile("input", "log");
-        File errorLogFile = File.createTempFile("error", "log");
-
         String[] command = new String[]{
                 "minisign",
                 "-Vm",
@@ -51,19 +46,22 @@ public class MinisignRunner {
         };
 
         Process process = new ProcessBuilder(command)
-                .redirectOutput(outputLogFile)
-                .redirectInput(inputLogFile)
-                .redirectError(errorLogFile)
+                .redirectErrorStream(true)
                 .start();
+
+        StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
+        logProcessErrors(process);
 
         boolean exitedGraceful = waitForCompletion(process);
 
-        String output = FileUtils.readFileToString(outputLogFile, StandardCharsets.UTF_8);
-
-        return ProcessResult.builder()
-                .output(output)
+        ProcessResult processResult = ProcessResult.builder()
                 .exitedGraceful(exitedGraceful)
+                .output(processFeedbackBuffer.toString())
                 .build();
+
+        log.debug("Process result: {}", processResult);
+
+        return processResult;
     }
 
     @SneakyThrows
@@ -79,11 +77,12 @@ public class MinisignRunner {
                 signatureFile
         };
 
-        Process process = new ProcessBuilder(command).start();
+        Process process = new ProcessBuilder(command)
+                .redirectErrorStream(true)
+                .start();
 
-        logProcessFeedback(process);
         logProcessErrors(process);
-        StringBuffer processInputBuffer = bufferProcessFeedback(process);
+        StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
 
         writeTextToTerminal(password, process.getOutputStream());
 
@@ -92,7 +91,7 @@ public class MinisignRunner {
         ProcessResult processResult = ProcessResult.builder()
                 .exitValue(process.exitValue())
                 .exitedGraceful(exitedGraceful)
-                .output(processInputBuffer.toString())
+                .output(processFeedbackBuffer.toString())
                 .build();
 
         log.debug("Process result: {}", processResult);
@@ -100,18 +99,18 @@ public class MinisignRunner {
     }
 
     private void logProcessFeedback(Process process) {
-        StreamGobbler inputStreamGobbler = new StreamGobbler(process.getInputStream(), log::debug);
+        ProcessInputStreamGobbler inputStreamGobbler = new ProcessInputStreamGobbler(process, log::debug);
         Executors.newSingleThreadExecutor().submit(inputStreamGobbler);
     }
 
     private void logProcessErrors(Process process) {
-        StreamGobbler errorStreamGobbler = new StreamGobbler(process.getErrorStream(), log::error);
+        ProcessErrorStreamGobbler errorStreamGobbler = new ProcessErrorStreamGobbler(process, log::error);
         Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
     }
 
     private StringBuffer bufferProcessFeedback(Process process) {
         StringBuffer processInputBuffer = new StringBuffer();
-        Executors.newSingleThreadExecutor().submit(new StreamGobbler(process.getInputStream(), processInputBuffer::append));
+        Executors.newSingleThreadExecutor().submit(new ProcessInputStreamGobbler(process, processInputBuffer::append));
         return processInputBuffer;
     }
 
