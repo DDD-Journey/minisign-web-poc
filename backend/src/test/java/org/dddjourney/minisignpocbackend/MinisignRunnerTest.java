@@ -31,7 +31,7 @@ class MinisignRunnerTest {
         ProcessResult processResult = subject.version();
 
         // then
-        assertThat(processResult.getOutput()).contains("minisign 0.10");
+        assertThat(processResult.getProcessFeedback()).contains("minisign 0.10");
         assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
         assertThat(processResult.isExitedGraceful()).isTrue();
     }
@@ -46,7 +46,7 @@ class MinisignRunnerTest {
         ProcessResult processResult = subject.verifyFile(payloadFile, publicKeyFile);
 
         // then
-        assertThat(processResult.getOutput()).contains("Signature and comment signature verified");
+        assertThat(processResult.getProcessFeedback()).contains("Signature and comment signature verified");
         assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
         assertThat(processResult.isExitedGraceful()).isTrue();
     }
@@ -66,7 +66,7 @@ class MinisignRunnerTest {
         assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
         assertThat(processResult.isExitedGraceful()).isTrue();
         assertThat(readFile(signatureFile)).contains("file:test_payload_file.txt");
-        assertThat(processResult.getOutput()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
+        assertThat(processResult.getProcessFeedback()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
     }
 
     private String buildFilePathString(Path tempDir, String fileName) {

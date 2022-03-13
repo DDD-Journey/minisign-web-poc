@@ -2,11 +2,10 @@ package org.dddjourney.minisignpocbackend;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -15,74 +14,66 @@ public class MinisignRunner {
 
     @SneakyThrows
     public ProcessResult version() {
+        String[] command = {"minisign", "-v"};
 
-        Process process = new ProcessBuilder("minisign", "-v").start();
+        log.debug("Process command {}", Arrays.toString(command));
+
+        Process process = new ProcessBuilder(command).start();
 
         StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
-        logProcessErrors(process);
+        StringBuffer processErrorBuffer = bufferProcessError(process);
 
         boolean exitedGraceful = waitForCompletion(process);
 
         ProcessResult processResult = ProcessResult.builder()
-                .output(processFeedbackBuffer.toString())
+                .processFeedback(processFeedbackBuffer.toString())
+                .processError(processErrorBuffer.toString())
                 .exitedGraceful(exitedGraceful)
                 .exitValue(process.exitValue())
                 .build();
 
         log.debug("Process result: {}", processResult);
-
         return processResult;
     }
 
     @SneakyThrows
     public ProcessResult verifyFile(String payloadFile, String publicKeyFile) {
+        String[] command = {"minisign", "-Vm", payloadFile, "-p", publicKeyFile};
 
-        String[] command = new String[]{
-                "minisign",
-                "-Vm",
-                payloadFile,
-                "-p",
-                publicKeyFile
-        };
+        log.debug("Process command {}", Arrays.toString(command));
 
         Process process = new ProcessBuilder(command)
                 .redirectErrorStream(true)
                 .start();
 
         StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
-        logProcessErrors(process);
+        StringBuffer processErrorBuffer = bufferProcessError(process);
 
         boolean exitedGraceful = waitForCompletion(process);
 
         ProcessResult processResult = ProcessResult.builder()
                 .exitedGraceful(exitedGraceful)
-                .output(processFeedbackBuffer.toString())
+                .exitValue(process.exitValue())
+                .processFeedback(processFeedbackBuffer.toString())
+                .processError(processErrorBuffer.toString())
                 .build();
 
         log.debug("Process result: {}", processResult);
-
         return processResult;
     }
 
     @SneakyThrows
     public ProcessResult signFile(String password, String payloadFile, String secretKeyFile, String signatureFile) {
+        String[] command = {"minisign", "-Sm", payloadFile, "-s", secretKeyFile, "-x", signatureFile};
 
-        String[] command = new String[]{
-                "minisign",
-                "-Sm",
-                payloadFile,
-                "-s",
-                secretKeyFile,
-                "-x",
-                signatureFile
-        };
+        log.debug("Process command {}", Arrays.toString(command));
 
         Process process = new ProcessBuilder(command)
                 .redirectErrorStream(true)
                 .start();
 
-        logProcessErrors(process);
         StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
+        StringBuffer processErrorBuffer = bufferProcessError(process);
 
         writeTextToTerminal(password, process.getOutputStream());
 
@@ -91,21 +82,19 @@ public class MinisignRunner {
         ProcessResult processResult = ProcessResult.builder()
                 .exitValue(process.exitValue())
                 .exitedGraceful(exitedGraceful)
-                .output(processFeedbackBuffer.toString())
+                .processFeedback(processFeedbackBuffer.toString())
+                .processError(processErrorBuffer.toString())
                 .build();
 
         log.debug("Process result: {}", processResult);
         return processResult;
     }
 
-    private void logProcessFeedback(Process process) {
-        ProcessInputStreamGobbler inputStreamGobbler = new ProcessInputStreamGobbler(process, log::debug);
-        Executors.newSingleThreadExecutor().submit(inputStreamGobbler);
-    }
-
-    private void logProcessErrors(Process process) {
-        ProcessErrorStreamGobbler errorStreamGobbler = new ProcessErrorStreamGobbler(process, log::error);
+    private StringBuffer bufferProcessError(Process process) {
+        StringBuffer processErrorBuffer = new StringBuffer();
+        ProcessErrorStreamGobbler errorStreamGobbler = new ProcessErrorStreamGobbler(process, processErrorBuffer::append);
         Executors.newSingleThreadExecutor().submit(errorStreamGobbler);
+        return processErrorBuffer;
     }
 
     private StringBuffer bufferProcessFeedback(Process process) {
@@ -118,7 +107,7 @@ public class MinisignRunner {
         PrintWriter outputWriter = new PrintWriter(outputStream);
         outputWriter.println(text);
         outputWriter.flush();
-        log.debug("Password written to terminal!");
+        log.debug("Password written to process!");
     }
 
     private boolean waitForCompletion(Process process) throws InterruptedException {

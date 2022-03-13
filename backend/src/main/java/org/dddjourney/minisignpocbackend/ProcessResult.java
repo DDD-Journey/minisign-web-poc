@@ -8,8 +8,9 @@ import lombok.Data;
 public class ProcessResult {
 
     private int exitValue;
-    private String output;
     private boolean exitedGraceful;
+    private String processFeedback;
+    private String processError;
 
 
 }
