@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend;
+package org.dddjourney.minisignpocbackend.domain;
 
 import lombok.extern.slf4j.Slf4j;
 

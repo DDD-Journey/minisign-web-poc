@@ -25,7 +25,13 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.11.+'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // OpenAPI
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+    implementation 'org.hibernate:hibernate-validator:7.0.4.Final'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -37,7 +43,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.assertj:assertj-core:3.22.+'
 }
 
 dependencyManagement {

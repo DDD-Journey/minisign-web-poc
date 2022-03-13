@@ -1,7 +1,8 @@
-package org.dddjourney.minisignpocbackend;
+package org.dddjourney.minisignpocbackend.domain;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -10,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
+@Component
 public class MinisignRunner {
 
     @SneakyThrows

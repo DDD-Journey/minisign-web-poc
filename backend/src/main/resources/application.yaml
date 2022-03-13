@@ -1,3 +1,26 @@
+############################################################################
+#                               Info
+############################################################################
+info:
+  application:
+    name: "Minisign Web - proof of concept"
+    description: "Proof of concept"
+    version: "0.0.1-SNAPSHOT"
+
+############################################################################
+#                               OpenApi
+############################################################################
+
+open-api-doc:
+  application:
+    name: ${info.application.name}
+    description: ${info.application.description}
+    version: ${info.application.version}
+    port: ${server.port}
+
+#############################################
+# Logging
+#############################################
 logging:
   level:
-    root: DEBUG
+    org.dddjourney: DEBUG

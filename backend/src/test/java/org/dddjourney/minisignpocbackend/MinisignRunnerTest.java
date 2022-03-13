@@ -2,6 +2,8 @@ package org.dddjourney.minisignpocbackend;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.dddjourney.minisignpocbackend.domain.MinisignRunner;
+import org.dddjourney.minisignpocbackend.domain.ProcessResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
