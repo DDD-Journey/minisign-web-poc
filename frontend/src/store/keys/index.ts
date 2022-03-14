@@ -1,4 +1,4 @@
-import { createModule, action, getter } from "vuex-class-component";
+import { createModule, action } from "vuex-class-component";
 
 const VuexModule = createModule({
     namespaced: "keys",

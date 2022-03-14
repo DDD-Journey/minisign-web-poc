@@ -8,7 +8,7 @@
       <div class="form">
         <label for="password">Password</label>
         <br />
-        <input :type="passwordFieldType" id="password" v-model="keys.password"/>
+        <input :type="passwordFieldType" id="password" v-model="keysModul.password"/>
         <button @click="switchVisibility">show / hide</button>
         <br /><br />
         <button @click="crateKeyPair" class="button">Create Key Pair</button>
@@ -27,7 +27,7 @@ import { vxm } from "@/store";
 })
 export default class CreateKeyPair extends Vue {
 
-  private keys = vxm.keys;
+  private keysModul = vxm.keys;
   private passwordFieldType = "password"
 
   private switchVisibility() {
@@ -35,7 +35,7 @@ export default class CreateKeyPair extends Vue {
   }
 
   private crateKeyPair() {
-    vxm.keys.createPrivateKeys();
+    this.keysModul.createPrivateKeys();
   }
 }
 </script>
