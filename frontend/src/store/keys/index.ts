@@ -1,4 +1,5 @@
 import { createModule, action } from "vuex-class-component";
+import password from "@/components/Password.vue";
 
 const VuexModule = createModule({
     namespaced: "keys",
@@ -14,6 +15,7 @@ export class KeysStore extends VuexModule {
 
     @action
     async createPrivateKeys() {
+        console.log(`Store: ${this.password}`)
         // Todo something
         // Call Backend
         // Return a zip file with a private and public key

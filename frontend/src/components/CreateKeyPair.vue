@@ -6,10 +6,7 @@
     </p>
     <div class="outerForm">
       <div class="form">
-        <label for="password">Password</label>
-        <br />
-        <input :type="passwordFieldType" id="password" v-model="keysModul.password"/>
-        <button @click="switchVisibility">show / hide</button>
+        <Password id="password" v-model="keysModule.password"></Password>
         <br /><br />
         <button @click="crateKeyPair" class="button">Create Key Pair</button>
       </div>
@@ -20,22 +17,20 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { vxm } from "@/store";
+import Password from "@/components/Password.vue";
 
 @Options({
-  components: {},
+  components: {
+    Password
+  },
   props: {}
 })
 export default class CreateKeyPair extends Vue {
 
-  private keysModul = vxm.keys;
-  private passwordFieldType = "password"
-
-  private switchVisibility() {
-    this.passwordFieldType = this.passwordFieldType === "password" ? "text" : "password";
-  }
+  private keysModule = vxm.keys;
 
   private crateKeyPair() {
-    this.keysModul.createPrivateKeys();
+    this.keysModule.createPrivateKeys();
   }
 }
 </script>
