@@ -9,10 +9,12 @@ const VuexModule = createModule({
 
 export class SignStore extends VuexModule {
     private files!: FileList;
+    private password = "";
 
     @action
     async signFile() {
         if (this.files){
+            console.log(this.password)
             console.log(this.files)
             const uploadData = new FormData();
             uploadData.append('file', this.files[0]);

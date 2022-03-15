@@ -5,6 +5,9 @@
       Upload the document, the private key and type the password for the private key.
     </p>
     <file-upload v-model="signModule.files"/>
+    <br />
+    <Password id="password" v-model="signModule.password"></Password>
+    <br />
     <button @click="signFile" class="button">Sign Document</button>
     <div v-if="signModule.files" class="file-info">
       <h4>File Information</h4>
@@ -21,10 +24,12 @@
 import { Options, Vue } from 'vue-class-component';
 import FileUpload from "@/components/FileUpload.vue";
 import { vxm } from "@/store";
+import Password from "@/components/Password.vue";
 
 @Options({
   components: {
     FileUpload,
+    Password
   },
   props: {
   }
