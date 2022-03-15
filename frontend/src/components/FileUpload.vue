@@ -1,7 +1,18 @@
 <template>
     <div class="file-upload-container">
       <input id="fileElem" type="file" multiple accept="image/*" class="visually-hidden" @change="onFileChange" />
-      <label id="dropbox" for="fileElem"  class="file-upload">Click for File upload or drop a file</label>
+      <label
+          id="dropbox"
+          for="fileElem"
+          class="dropzone"
+          @dragover="onDragOver"
+          @dragleave="onDragLeave"
+          @dragenter="onDragEnter"
+          @drop="onDrop"
+          v-bind:class="{hightlight: hightlight, disabled: !enabled}"
+      >
+        Click for File upload or drop a file
+      </label>
     </div>
 </template>
 
@@ -16,8 +27,11 @@ import { vxm } from "@/store";
     modelValue: FileList
   }
 })
+// https://malcoded.com/posts/vue-file-upload-ts/ Good example
 export default class FileUpload extends Vue {
-  private files = null
+  private files = null;
+  hightlight = false;
+  enabled = true;
 
   private onFileChange(event: any) {
     this.files = event.target.files || event.dataTransfer.files;
@@ -27,31 +41,29 @@ export default class FileUpload extends Vue {
     this.$emit('update:modelValue', this.files);
   }
 
-  private dragenter(event: Event) {
+  private onDragEnter(event: DragEvent) {
     event.stopPropagation();
     event.preventDefault();
   }
 
-  private dragover(event: Event) {
+  private onDragOver(event: DragEvent) {
     event.stopPropagation();
     event.preventDefault();
+    this.hightlight = true;
   }
 
-  private drop(event: any) {
+  private onDragLeave(event: DragEvent): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.hightlight = false;
+  }
+
+  private onDrop(event: DragEvent) {
     event.stopPropagation();
     event.preventDefault();
     this.onFileChange(event)
   }
 
-  mounted() {
-    let dropbox;
-    dropbox = document.getElementById("dropbox");
-    if(dropbox) {
-      dropbox.addEventListener("dragenter", this.dragenter, false);
-      dropbox.addEventListener("dragover", this.dragover, false);
-      dropbox.addEventListener("drop", this.drop, false);
-    }
-  }
 }
 </script>
 
@@ -74,18 +86,20 @@ export default class FileUpload extends Vue {
   input.visually-hidden:focus-within + label {
     outline: thin dotted;
   }
-  .file-upload {
-    border: solid 1px darkgray;
-    outline: thin dotted;
-    padding: 20px;
-    background: lightgray;
+  .dropzone {
+    outline: 2px dashed grey; /* the dash box */
+    outline-offset: -10px;
+    background: lightcyan;
+    color: dimgray;
+    padding: 30px;
+    height: 200px;
+    cursor: pointer;
+  }
+  .dropzone:hover {
+    background: #b3dbc9; /* when mouse over to the drop zone, change color */
+  }
+  .hightlight {
+    background-color: #b3dbc9;
   }
 
-  #dropbox {
-    width: 100px;
-    height: 100px;
-    padding: 20px;
-    border: solid 1px black;
-    outline: thin dotted;
-  }
 </style>

@@ -4,14 +4,14 @@
     <p>
       Upload the document, the private key and type the password for the private key.
     </p>
-    <file-upload v-model="signModul.files"/>
+    <file-upload v-model="signModule.files"/>
     <button @click="signFile" class="button">Sign Document</button>
-    <div v-if="signModul.files" class="file-info">
+    <div v-if="signModule.files" class="file-info">
       <h4>File Information</h4>
       <ul>
-        <li>name: {{ signModul.files[0].name }}</li>
-        <li>size: {{ signModul.files[0].size }}</li>
-        <li>type: {{ signModul.files[0].type }}</li>
+        <li>name: {{ signModule.files[0].name }}</li>
+        <li>size: {{ signModule.files[0].size }}</li>
+        <li>type: {{ signModule.files[0].type }}</li>
       </ul>
     </div>
   </div>
@@ -30,10 +30,10 @@ import { vxm } from "@/store";
   }
 })
 export default class SignDocument extends Vue {
-  private signModul = vxm.sign;
+  private signModule = vxm.sign;
 
   private signFile() {
-    this.signModul.signFile();
+    this.signModule.signFile();
   }
 }
 </script>
