@@ -5,6 +5,7 @@
 - Parallel processes / Isolation
 - Exception Handling / Error Responses
 - API Documentation
+- Delete processed files
 
 ## Hyperlinks
 - [Guide to java.lang.ProcessBuilder API](https://www.baeldung.com/java-lang-processbuilder-api)

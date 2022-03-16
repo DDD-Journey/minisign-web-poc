@@ -1,6 +1,7 @@
 package org.dddjourney.minisignpocbackend.rest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.dddjourney.minisignpocbackend.domain.MinisignService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,21 @@ public class MinisignController {
         return ResponseEntity.ok(minisignService.version());
     }
 
-//    @PostMapping("/uploadFile")
-//    public ResponseEntity<String> uploadFile(
-//            @RequestParam("payloadFile") MultipartFile payloadFile,
-//            @RequestParam("publicKeyFile") MultipartFile publicKeyFile) {
-//
-//
-//        return new ResponseEntity("Upload successful", HttpStatus.CREATED);
-//    }
+    @PostMapping(path = "/verify-file", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> uploadFile(
+            @RequestParam("signed-file") MultipartFile signedFile,
+            @RequestParam("signature-file") MultipartFile signatureFile,
+            @RequestParam("public-key-file") MultipartFile publicKeyFile) {
+
+
+        String processFeedback = minisignService.verifyFile(convertToBytes(signedFile), convertToBytes(signatureFile), convertToBytes(publicKeyFile));
+
+        return new ResponseEntity(processFeedback, HttpStatus.CREATED);
+    }
+
+    @SneakyThrows
+    private byte[] convertToBytes(MultipartFile signedFile) {
+        return signedFile.getBytes();
+    }
 
 }

@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,10 +33,28 @@ class MinisignControllerTest {
                 .andExpect(content().string("minisign 0.10"));
 
     }
-//
-//    @Test
-//    void uploadFile() {
-//
-//
-//    }
+
+    @Test
+    @SneakyThrows
+    void verifyFile() {
+        // given
+        MockMultipartFile signedFile = buildMockMultipartFile("signed-file", "src/test/resources/minisign/test_payload_file.txt");
+        MockMultipartFile signatureFile = buildMockMultipartFile("signature-file", "src/test/resources/minisign/test_payload_file.txt.minisig");
+        MockMultipartFile publicKeyFile = buildMockMultipartFile("public-key-file", "src/test/resources/minisign/minisign_public_key.pub");
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .multipart("/verify-file")
+                        .file(signedFile)
+                        .file(signatureFile)
+                        .file(publicKeyFile))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().string("Signature and comment signature verifiedTrusted comment: timestamp:1645981228\tfile:test_payload_file.txt\thashed"));
+    }
+
+    private MockMultipartFile buildMockMultipartFile(String parameterName, String filePath) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        return new MockMultipartFile(parameterName, fileInputStream);
+    }
 }

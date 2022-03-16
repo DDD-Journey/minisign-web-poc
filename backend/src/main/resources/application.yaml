@@ -24,3 +24,12 @@ open-api-doc:
 logging:
   level:
     org.dddjourney: DEBUG
+
+#############################################
+# Spring Boot Framework
+#############################################
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
