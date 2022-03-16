@@ -1,9 +1,7 @@
-package org.dddjourney.minisignpocbackend;
+package org.dddjourney.minisignpocbackend.domain;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
-import org.dddjourney.minisignpocbackend.domain.MinisignRunner;
-import org.dddjourney.minisignpocbackend.domain.ProcessResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -41,11 +39,12 @@ class MinisignRunnerTest {
     @Test
     void verifyFile() {
         // given
-        String payloadFile = "src/test/resources/minisign/test_payload_file.txt";
+        String signedFile = "src/test/resources/minisign/test_payload_file.txt";
+        String signatureFile = "src/test/resources/minisign/test_payload_file.txt.minisig";
         String publicKeyFile = "src/test/resources/minisign/minisign_public_key.pub";
 
         // when
-        ProcessResult processResult = subject.verifyFile(payloadFile, publicKeyFile);
+        ProcessResult processResult = subject.verifyFile(signedFile, signatureFile, publicKeyFile);
 
         // then
         assertThat(processResult.getProcessFeedback()).contains("Signature and comment signature verified");

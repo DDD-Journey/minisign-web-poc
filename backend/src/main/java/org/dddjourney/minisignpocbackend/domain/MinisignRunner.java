@@ -39,8 +39,8 @@ public class MinisignRunner {
     }
 
     @SneakyThrows
-    public ProcessResult verifyFile(String payloadFile, String publicKeyFile) {
-        String[] command = {"minisign", "-Vm", payloadFile, "-p", publicKeyFile};
+    public ProcessResult verifyFile(String payloadFile, String signatureFile, String publicKeyFile) {
+        String[] command = {"minisign", "-Vm", payloadFile, "-x", signatureFile,"-p", publicKeyFile};
 
         log.debug("Process command {}", Arrays.toString(command));
 
