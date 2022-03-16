@@ -94,7 +94,7 @@ asap@^2.0.0:
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
-body-parser@1.19.2:
+body-parser@1.19.2, body-parser@^1.19.2:
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.2.tgz#4714ccd9c157d44797b8b5607d72c0b89952f26e"
   integrity sha512-SAAwOxgoCKMGs9uUAUFHygfLAyaniaoun6I8mFY9pRAJL9+Kec34aU+oIjDhTycub1jozEfEwx1W1IuOYxVSFw==
@@ -189,11 +189,6 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
-
-express-throttle-bandwidth@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/express-throttle-bandwidth/-/express-throttle-bandwidth-1.0.1.tgz#d7ef983b506ce36d87d53ad7babda4db656d6b3b"
-  integrity sha1-1++YO1Bs422H1TrXur2k22Vtazs=
 
 express@^4.17.3:
   version "4.17.3"

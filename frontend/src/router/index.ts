@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import CreateKeyPair from "@/components/CreateKeyPair.vue";
-import SignDocument from "@/components/SignDocument.vue";
-import VerifyDocument from "@/components/VerifyDocument.vue";
+import CreateKeyPair from "@/views/CreateKeyPair.vue";
+import SignDocument from "@/views/SignDocument.vue";
+import VerifyDocument from "@/views/VerifyDocument.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
