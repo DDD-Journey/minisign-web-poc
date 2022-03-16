@@ -4,21 +4,30 @@
     <p>
       Some description
     </p>
-    <file-upload />
+    <file-upload v-model="verifyModule.files" />
+    <Button @click="verifyFile" label="Verify Document" />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import FileUpload from "@/components/FileUpload.vue";
+import Button from "@/components/Button.vue";
+import { vxm } from "@/store";
 
 @Options({
   components: {
     FileUpload,
+    Button
   },
   props: {}
 })
 export default class VerifyDocument extends Vue {
+  private verifyModule = vxm.verify;
+
+  private verifyFile() {
+    this.verifyModule.verifyFile()
+  }
 }
 </script>
 

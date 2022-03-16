@@ -8,7 +8,7 @@
     <br />
     <Password id="password" v-model="signModule.password"></Password>
     <br />
-    <button @click="signFile" class="button">Sign Document</button>
+    <Button @click="signFile" label="Sign Document" />
     <div v-if="signModule.files" class="file-info">
       <h4>File Information</h4>
       <ul>
@@ -25,11 +25,13 @@ import { Options, Vue } from 'vue-class-component';
 import FileUpload from "@/components/FileUpload.vue";
 import { vxm } from "@/store";
 import Password from "@/components/Password.vue";
+import Button from "@/components/Button.vue";
 
 @Options({
   components: {
     FileUpload,
-    Password
+    Password,
+    Button
   },
   props: {
   }

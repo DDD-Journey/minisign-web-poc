@@ -16,7 +16,7 @@ import { Options, Vue } from 'vue-class-component';
     modelValue: String
   }
 })
-export default class extends Vue {
+export default class Password extends Vue {
   private passwordFieldType = "password"
 
   private switchVisibility() {

@@ -18,7 +18,6 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { vxm } from "@/store";
 
 @Options({
   components: {

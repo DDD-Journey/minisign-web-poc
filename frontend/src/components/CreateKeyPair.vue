@@ -6,9 +6,9 @@
     </p>
     <div class="outerForm">
       <div class="form">
-        <Password id="password" v-model="keysModule.password"></Password>
+        <Password id="password" v-model="keysModule.password" />
         <br /><br />
-        <button @click="crateKeyPair" class="button">Create Key Pair</button>
+        <Button @click="crateKeyPair" label="Create Key Pair" />
       </div>
     </div>
   </div>
@@ -18,10 +18,12 @@
 import { Options, Vue } from 'vue-class-component';
 import { vxm } from "@/store";
 import Password from "@/components/Password.vue";
+import Button from "@/components/Button.vue";
 
 @Options({
   components: {
-    Password
+    Password,
+    Button
   },
   props: {}
 })
