@@ -1,14 +1,14 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import CreateKeyPair from "@/views/CreateKeyPair.vue";
-import SignDocument from "@/views/SignDocument.vue";
-import VerifyDocument from "@/views/VerifyDocument.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import CreateKeyPair from '@/views/CreateKeyPair.vue';
+import SignDocument from '@/views/SignDocument.vue';
+import VerifyDocument from '@/views/VerifyDocument.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
   },
   {
     path: '/about',
@@ -16,28 +16,29 @@ const routes: Array<RouteRecordRaw> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
   },
   {
     path: '/create',
     name: 'createKeyPair',
-    component: CreateKeyPair
+    component: CreateKeyPair,
   },
   {
     path: '/sign',
     name: 'signDocument',
-    component: SignDocument
+    component: SignDocument,
   },
   {
     path: '/verify',
     name: 'verifyDocument',
-    component: VerifyDocument
-  }
-]
+    component: VerifyDocument,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

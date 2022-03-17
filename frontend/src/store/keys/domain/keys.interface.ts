@@ -1,3 +1,3 @@
 export interface Keys {
-    passoword: string;
+  passoword: string;
 }
