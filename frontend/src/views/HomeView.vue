@@ -29,9 +29,6 @@ export default class HomeView extends Vue {}
   column-gap: 6em;
   padding-top: 50px;
 }
-h1 {
-  text-shadow: 3px 3px 4px #777;
-}
 a:link,
 a:visited {
   display: block;

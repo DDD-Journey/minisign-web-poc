@@ -49,7 +49,7 @@ export default class Password extends Vue {
   border-radius: 5px;
 }
 .showButton:hover {
-  background-color: #f2f2f2;
+  background-color: #bfbfbf;
   cursor: pointer;
 }
 </style>

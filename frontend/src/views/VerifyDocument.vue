@@ -1,13 +1,15 @@
 <template>
   <aside>
-    <h1>Instruction</h1>
+    <h1>Information</h1>
     <p>Wofür ist diese Funktion und was muss ich tun</p>
   </aside>
   <section>
     <h1>Sign a document</h1>
     <p>Some description</p>
     <file-upload v-model="verifyModule.files" />
-    <Button @click="verifyFile" label="Verify Document" />
+    <div class="submit-container">
+      <Button @click="verifyFile" label="Verify Document" />
+    </div>
   </section>
 </template>
 
@@ -33,4 +35,8 @@ export default class VerifyDocument extends Vue {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.submit-container {
+  padding-top: 15px;
+}
+</style>

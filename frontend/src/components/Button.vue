@@ -26,6 +26,6 @@ export default class Button extends Vue {}
   cursor: pointer;
 }
 .button:hover {
-  background-color: #4f91e8;
+  background-color: #1a67cb;
 }
 </style>

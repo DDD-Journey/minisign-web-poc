@@ -1,26 +1,31 @@
 <template>
   <aside>
-    <h1>Instruction</h1>
-    <p>Wofür ist diese Funktion und was muss ich tun</p>
+    <h1>Information</h1>
+    <p>
+      Upload the document and the private key in a ZIP file here and enter the
+      password for the private key to create a signing file. You can then
+      download this signing file. Now you can share your document with the
+      signing file and the public key. It is advisable to transfer the public
+      key in another way.
+    </p>
+    <p>
+      Don't worry, we don't store the private key. This is only a PoC. It is
+      only used to sign the document.
+    </p>
+    <h1>Procedure</h1>
+    <ul>
+      <li>Upload a ZIP File</li>
+      <li>Enter Password</li>
+      <li>Click "Sign Document" Button</li>
+    </ul>
   </aside>
   <section>
     <h1>Sign a document</h1>
-    <p>
-      Upload the document, the private key and type the password for the private
-      key.
-    </p>
-    <file-upload v-model="signModule.files" />
-    <br />
-    <Password id="password" v-model="signModule.password"></Password>
-    <br />
-    <Button @click="signFile" label="Sign Document" />
-    <div v-if="signModule.files" class="file-info">
-      <h4>File Information</h4>
-      <ul>
-        <li>name: {{ signModule.files[0].name }}</li>
-        <li>size: {{ signModule.files[0].size }}</li>
-        <li>type: {{ signModule.files[0].type }}</li>
-      </ul>
+    <FileUpload v-model="signModule.files" />
+    <br>
+    <Password id="password" v-model="signModule.password" />
+    <div class="submit-container">
+      <Button @click="signFile" label="Sign Document" />
     </div>
   </section>
 </template>
@@ -50,18 +55,7 @@ export default class SignDocument extends Vue {
 </script>
 
 <style scoped>
-a {
-  color: #42b983;
-}
-.file-info {
-  padding-top: 30px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  margin: 0 10px;
+.submit-container {
+  padding-top: 15px;
 }
 </style>

@@ -1,5 +1,12 @@
 <template>
-  <div class="file-upload-container">
+  <div class="dropzone"
+       @dragover="onDragOver"
+       @dragleave="onDragLeave"
+       @dragenter="onDragEnter"
+       @drop="onDrop"
+       v-bind:class="{ hightlight: hightlight}"
+  >
+    <div class="dropzone-text">Drag and Drop to upload</div>
     <input
       id="fileElem"
       type="file"
@@ -8,18 +15,12 @@
       class="visually-hidden"
       @change="onFileChange"
     />
-    <label
-      id="dropbox"
-      for="fileElem"
-      class="dropzone"
-      @dragover="onDragOver"
-      @dragleave="onDragLeave"
-      @dragenter="onDragEnter"
-      @drop="onDrop"
-      v-bind:class="{ hightlight: hightlight, disabled: !enabled }"
-    >
-      Click for File upload or drop a file
+    <label for="fileElem" class="dropzone-button">
+      or, browse files
     </label>
+    <div class="dropzone-filename-box">
+      {{ fileName }}
+    </div>
   </div>
 </template>
 
@@ -34,16 +35,16 @@ import { Options, Vue } from 'vue-class-component';
 })
 // https://malcoded.com/posts/vue-file-upload-ts/ Good example
 export default class FileUpload extends Vue {
-  private files = null;
-  hightlight = false;
-  enabled = true;
+  private files!: FileList;
+  private fileName = '';
+  private hightlight = false;
 
   private onFileChange(event: any) {
     this.files = event.target.files || event.dataTransfer.files;
-    if (this.files == null) {
-      return;
+    if (this.files) {
+      this.fileName =  this.files[0].name
+      this.$emit('update:modelValue', this.files);
     }
-    this.$emit('update:modelValue', this.files);
   }
 
   private onDragEnter(event: DragEvent) {
@@ -72,9 +73,22 @@ export default class FileUpload extends Vue {
 </script>
 
 <style scoped lang="scss">
-.file-upload-container {
-  padding-top: 50px;
-  height: 50px;
+.dropzone {
+  width: 300px;
+  height: 200px;
+  outline: 2px dashed grey; /* the dash box */
+  outline-offset: -10px;
+  background: #e6f6ff;
+  color: dimgray;
+  padding: 30px;
+  text-align: center;
+}
+.dropzone-text {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+.hightlight {
+  background-color:#ccecff;
 }
 .visually-hidden {
   position: absolute !important;
@@ -90,19 +104,23 @@ input.visually-hidden:focus + label {
 input.visually-hidden:focus-within + label {
   outline: thin dotted;
 }
-.dropzone {
-  outline: 2px dashed grey; /* the dash box */
-  outline-offset: -10px;
-  background: lightcyan;
-  color: dimgray;
-  padding: 30px;
-  height: 200px;
+.dropzone-button {
+  padding: 8px 12px;
+  margin-top: 50px;
+  background-color: #3b85e5;
+  border: solid 1px lightgray;
+  border-radius: 5px;
+  color: white;
   cursor: pointer;
 }
-.dropzone:hover {
-  background: #b3dbc9; /* when mouse over to the drop zone, change color */
+.dropzone-button:hover {
+  background-color: #1a67cb;
 }
-.hightlight {
-  background-color: #b3dbc9;
+.dropzone-filename-box {
+  margin-top: 20px;
+  padding: 5px;
+  //border:1px solid grey;
+  //border-radius: 5px;
+  //background-color: #e6e6e6;
 }
 </style>
