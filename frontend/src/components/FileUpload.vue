@@ -1,10 +1,11 @@
 <template>
-  <div class="dropzone"
-       @dragover="onDragOver"
-       @dragleave="onDragLeave"
-       @dragenter="onDragEnter"
-       @drop="onDrop"
-       v-bind:class="{ hightlight: hightlight}"
+  <div
+    class="dropzone"
+    @dragover="onDragOver"
+    @dragleave="onDragLeave"
+    @dragenter="onDragEnter"
+    @drop="onDrop"
+    v-bind:class="{ hightlight: hightlight }"
   >
     <div class="dropzone-text">Drag and Drop to upload</div>
     <input
@@ -15,9 +16,7 @@
       class="visually-hidden"
       @change="onFileChange"
     />
-    <label for="fileElem" class="dropzone-button">
-      or, browse files
-    </label>
+    <label for="fileElem" class="dropzone-button"> or, browse files </label>
     <div class="dropzone-filename-box">
       {{ fileName }}
     </div>
@@ -42,7 +41,7 @@ export default class FileUpload extends Vue {
   private onFileChange(event: any) {
     this.files = event.target.files || event.dataTransfer.files;
     if (this.files) {
-      this.fileName =  this.files[0].name
+      this.fileName = this.files[0].name;
       this.$emit('update:modelValue', this.files);
     }
   }
@@ -88,7 +87,7 @@ export default class FileUpload extends Vue {
   margin-bottom: 50px;
 }
 .hightlight {
-  background-color:#ccecff;
+  background-color: #ccecff;
 }
 .visually-hidden {
   position: absolute !important;

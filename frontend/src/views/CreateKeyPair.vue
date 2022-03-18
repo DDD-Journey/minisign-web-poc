@@ -12,8 +12,8 @@
       Keep these keys safe and make sure that nobody can access your private
       key. You need the private key to sign your documents. You send the public
       key with your signed document and the sign file to the person who wants to
-      verify the signing.It is advisable to send the signing file and the
-      public key to the recipient on different ways.
+      verify the signing.It is advisable to send the signing file and the public
+      key to the recipient on different ways.
     </p>
     <h1>Procedure</h1>
     <ul>

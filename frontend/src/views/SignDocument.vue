@@ -22,7 +22,7 @@
   <section>
     <h1>Sign a document</h1>
     <FileUpload v-model="signModule.files" />
-    <br>
+    <br />
     <Password id="password" v-model="signModule.password" />
     <div class="submit-container">
       <Button @click="signFile" label="Sign Document" />

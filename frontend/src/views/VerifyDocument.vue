@@ -1,7 +1,16 @@
 <template>
   <aside>
     <h1>Information</h1>
-    <p>Wofür ist diese Funktion und was muss ich tun</p>
+    <p>
+      Upload the document, the signing file and the public key of the signer in
+      a ZIP file. Immediately after sending you will receive a response whether
+      the signing is valid or not.
+    </p>
+    <h1>Procedure</h1>
+    <ul>
+      <li>Upload a ZIP File</li>
+      <li>Click "Verify Document" Button</li>
+    </ul>
   </aside>
   <section>
     <h1>Sign a document</h1>
