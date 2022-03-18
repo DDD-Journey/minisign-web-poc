@@ -1,11 +1,8 @@
 <template>
-  <aside>
-  </aside>
+  <aside></aside>
   <section>
     <h1>Welcome to Minisign-Web PoC</h1>
-    <p>
-      Choose one of the action below by clicking on it.
-    </p>
+    <p>Choose one of the action below by clicking on it.</p>
     <div class="actionBox">
       <router-link to="/create">Create a key pair</router-link>
       <router-link to="/sign">Sign a document</router-link>
@@ -18,8 +15,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
-  components: {
-  },
+  components: {},
 })
 export default class HomeView extends Vue {}
 </script>
@@ -34,22 +30,24 @@ export default class HomeView extends Vue {}
   padding-top: 50px;
 }
 h1 {
-  text-shadow: 3px 3px 4px #777
+  text-shadow: 3px 3px 4px #777;
 }
-a:link, a:visited {
+a:link,
+a:visited {
   display: block;
   padding: 10px;
   height: 100px;
   width: 200px;
-  color: #42b983;
+  color: white;
   border: solid 1px lightgray;
-  box-shadow: 5px 5px 10px silver;
+  box-shadow: 5px 5px 10px lightgray;
   border-radius: 10px;
-  background-color: cornsilk;
+  background-color: #3b85e5;
   text-align: center;
   text-decoration: none;
 }
-a:hover, a:active {
-  box-shadow: 5px 5px 10px silver inset;
+a:hover,
+a:active {
+  box-shadow: 5px 5px 10px #0070ad inset;
 }
 </style>

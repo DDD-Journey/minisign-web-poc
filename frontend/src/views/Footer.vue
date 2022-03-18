@@ -1,18 +1,13 @@
-<template>
-  by DDD-Journey
-</template>
+<template>by DDD-Journey</template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
   components: {},
-  props: {}
+  props: {},
 })
-export default class extends Vue {
-}
+export default class extends Vue {}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

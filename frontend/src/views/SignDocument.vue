@@ -6,9 +6,10 @@
   <section>
     <h1>Sign a document</h1>
     <p>
-      Upload the document, the private key and type the password for the private key.
+      Upload the document, the private key and type the password for the private
+      key.
     </p>
-    <file-upload v-model="signModule.files"/>
+    <file-upload v-model="signModule.files" />
     <br />
     <Password id="password" v-model="signModule.password"></Password>
     <br />
@@ -26,19 +27,18 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import FileUpload from "@/components/FileUpload.vue";
-import { vxm } from "@/store";
-import Password from "@/components/Password.vue";
-import Button from "@/components/Button.vue";
+import FileUpload from '@/components/FileUpload.vue';
+import { vxm } from '@/store';
+import Password from '@/components/Password.vue';
+import Button from '@/components/Button.vue';
 
 @Options({
   components: {
     FileUpload,
     Password,
-    Button
+    Button,
   },
-  props: {
-  }
+  props: {},
 })
 export default class SignDocument extends Vue {
   private signModule = vxm.sign;

@@ -3,26 +3,25 @@
     <Header />
   </header>
   <main>
-    <router-view/>
+    <router-view />
   </main>
   <footer>
-   <Footer />
+    <Footer />
   </footer>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Header from "@/views/Header.vue";
-import Footer from "@/views/Footer.vue";
+import Header from '@/views/Header.vue';
+import Footer from '@/views/Footer.vue';
 
 @Options({
   components: {
     Header,
-    Footer
-  }
+    Footer,
+  },
 })
-export default class extends Vue {
-}
+export default class extends Vue {}
 </script>
 
 <style lang="scss">
@@ -44,7 +43,14 @@ body {
   grid-template-rows: auto 1fr auto;
 }
 header {
-  background-image: linear-gradient(to right top, #00497b, #005188, #005995, #0061a2, #0069b0);
+  background-image: linear-gradient(
+    to right top,
+    #00497b,
+    #005188,
+    #005995,
+    #0061a2,
+    #0069b0
+  );
   padding: 20px;
   text-align: center;
   font-size: 35px;
@@ -57,10 +63,11 @@ main {
   grid-template-columns: 20% auto;
 }
 section {
-  padding: 20px;
+  padding: 20px 60px;
+  text-align: left;
 }
 aside {
-  padding: 20px;
+  padding: 20px 30px;
   background-color: #eaeaea;
   text-align: left;
 }

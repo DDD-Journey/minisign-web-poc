@@ -14,10 +14,9 @@ import { Options, Vue } from 'vue-class-component';
 
 @Options({
   components: {},
-  props: {}
+  props: {},
 })
-export default class extends Vue {
-}
+export default class extends Vue {}
 </script>
 
 <style scoped lang="scss">
@@ -25,9 +24,9 @@ nav {
   a {
     color: white;
     text-decoration: none;
-  &.router-link-exact-active {
-     color: #a9c4ef;
-   }
+    &.router-link-exact-active {
+      color: #a9c4ef;
+    }
   }
 }
 .logo {

@@ -1,11 +1,15 @@
 <template>
-  <aside>
-  </aside>
+  <aside></aside>
   <section>
     <p>
-      For the Project Repository,<br>
+      For the Project Repository,<br />
       check out the
-      <a href="https://github.com/DDD-Journey/minisign-web-poc" target="_blank" rel="noopener">Github Project of the Minisign-Web PoC</a>.
+      <a
+        href="https://github.com/DDD-Journey/minisign-web-poc"
+        target="_blank"
+        rel="noopener"
+        >Github Project of the Minisign-Web PoC</a
+      >.
     </p>
   </section>
 </template>

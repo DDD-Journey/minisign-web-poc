@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.vue\"",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
