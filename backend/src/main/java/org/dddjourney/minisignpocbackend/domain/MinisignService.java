@@ -23,20 +23,18 @@ public class MinisignService {
     }
 
     @SneakyThrows
-    public String verifyFile(byte[] signedFileContent, byte[] signatureFileContent, byte[] publicKeyFileContent) {
+    public ProcessResult verifyFile(byte[] signedFileContent, byte[] signatureFileContent, byte[] publicKeyFileContent) {
         String tempDirectory = createTempDirectory();
 
         File signedFile = writeTempFile(signedFileContent, Paths.get(tempDirectory, "/signed-file"));
         File signatureFile = writeTempFile(signatureFileContent, Paths.get(tempDirectory, "/signature-file"));
         File publicKeyFile = writeTempFile(publicKeyFileContent, Paths.get(tempDirectory, "/public-key-file"));
 
-        ProcessResult processResult = minisignRunner.verifyFile(
+        return minisignRunner.verifyFile(
                 signedFile.getCanonicalPath(),
                 signatureFile.getCanonicalPath(),
                 publicKeyFile.getCanonicalPath()
         );
-
-        return processResult.getProcessFeedback();
     }
 
     private File writeTempFile(byte[] signedFileContent, Path path) throws IOException {

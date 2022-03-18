@@ -26,6 +26,7 @@ class MinisignControllerTest {
     @SneakyThrows
     @Test
     void getMinisignVersion() {
+        // when-then
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/version"))
                 .andDo(print())
@@ -50,7 +51,12 @@ class MinisignControllerTest {
                         .file(publicKeyFile))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Signature and comment signature verifiedTrusted comment: timestamp:1645981228\tfile:test_payload_file.txt\thashed"));
+                .andExpect(content().json(
+                        "{\"exitValue\":0,"
+                                + "\"exitedGraceful\":true,"
+                                + "\"processFeedback\":\"Signature and comment signature verifiedTrusted comment: timestamp:1645981228\\tfile:test_payload_file.txt\\thashed\","
+                                + "\"processError\":\"\"}"
+                ));
     }
 
     private MockMultipartFile buildMockMultipartFile(String parameterName, String filePath) throws IOException {
