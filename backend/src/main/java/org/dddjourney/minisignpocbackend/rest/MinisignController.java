@@ -4,6 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.dddjourney.minisignpocbackend.domain.MinisignService;
 import org.dddjourney.minisignpocbackend.domain.ProcessResult;
+import org.dddjourney.minisignpocbackend.domain.ZipFileCreator;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +16,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 public class MinisignController {
 
     private final MinisignService minisignService;
+    private final ZipFileCreator zipFileCreator;
 
     @GetMapping("/version")
     public ResponseEntity<String> getMinisignVersion() {
@@ -56,6 +67,22 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(processResult), HttpStatus.CREATED);
     }
 
+    @SneakyThrows
+    @GetMapping(path = "download-files", produces = "application/zip")
+    public ResponseEntity<Resource> downloadFiles(@RequestParam("file-path") String filePath) {
+
+        Path path = Paths.get(new File(filePath).getAbsolutePath());
+        ByteArrayOutputStream byteArrayOutputStream = zipFileCreator.downloadZipFile(List.of(filePath));
+        ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"minisign.zip\"");
+
+        return ResponseEntity.ok()
+                .headers(responseHeaders)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
 
     private ProcessResultResource mapToProcessResultResource(ProcessResult processResult) {
         return ProcessResultResource.builder()

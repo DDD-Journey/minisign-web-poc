@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -16,16 +17,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(ZipFileExtractor.class)
 class MinisignControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
+    @Autowired ZipFileExtractor zipFileExtractor;
 
     @SneakyThrows
     @Test
@@ -89,6 +92,25 @@ class MinisignControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.processError").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdFiles").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.processFeedback").value("Password: Deriving a key from the password and decrypting the secret key... done"));
+    }
+
+    @Test
+    @SneakyThrows
+    void downloadFiles() {
+        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/download-files")
+                        .param("file-path", "src/test/resources/minisign/test_payload_file.txt.minisig"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/zip"))
+                .andReturn().getResponse().getContentAsByteArray();
+
+        List<ZipFileExtractor.FileMetaData> fileMetaDataList = zipFileExtractor.extractMetaData(contentAsByteArray);
+
+        assertThat(fileMetaDataList).extracting("fileName").containsExactly("src/test/resources/minisign/test_payload_file.txt.minisig");
+        assertThat(fileMetaDataList).extracting("fileSize").containsExactly(-1L);
+
+
     }
 
     private MockMultipartFile buildMockMultipartFile(String parameterName, String filePath) throws IOException {
