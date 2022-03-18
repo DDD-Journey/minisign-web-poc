@@ -14,7 +14,6 @@
   </aside>
   <section>
     <h1>Sign a document</h1>
-    <p>Some description</p>
     <file-upload v-model="verifyModule.files" />
     <div class="submit-container">
       <Button @click="verifyFile" label="Verify Document" />
