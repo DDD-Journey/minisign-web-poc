@@ -1,7 +1,7 @@
 <template>
   <aside>
-    <h1>Überschrift</h1>
-    <p>Erläuterung was hier passiert</p>
+    <h1>Instruction</h1>
+    <p>Wofür ist diese Funktion und was muss ich tun</p>
   </aside>
   <section>
     <h1>Create a key Pair</h1>

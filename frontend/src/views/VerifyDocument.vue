@@ -1,6 +1,7 @@
 <template>
   <aside>
-    Sie Text
+    <h1>Instruction</h1>
+    <p>Wofür ist diese Funktion und was muss ich tun</p>
   </aside>
   <section>
     <h1>Sign a document</h1>

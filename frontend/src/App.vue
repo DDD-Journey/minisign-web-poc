@@ -1,21 +1,29 @@
 <template>
   <header>
-<!--    <img alt="Vue logo" src="./assets/logo.png">-->
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/create">Create a key pair</router-link> |
-      <router-link to="/sign">Sign a document</router-link> |
-      <router-link to="/verify">Verify a document signing</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
+    <Header />
   </header>
   <main>
     <router-view/>
   </main>
   <footer>
-    Footer
+   <Footer />
   </footer>
 </template>
+
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import Header from "@/views/Header.vue";
+import Footer from "@/views/Footer.vue";
+
+@Options({
+  components: {
+    Header,
+    Footer
+  }
+})
+export default class extends Vue {
+}
+</script>
 
 <style lang="scss">
 // https://kulturbanause.de/blog/responsive-sticky-footer/
@@ -41,6 +49,8 @@ header {
   text-align: center;
   font-size: 35px;
   color: white;
+  display: grid;
+  grid-template-columns: 300px auto;
 }
 main {
   display: grid;
@@ -59,16 +69,5 @@ footer {
   padding: 10px 10px 10px 30px;
   text-align: left;
   color: white;
-}
-nav {
-  a {
-    color: white;
-    text-decoration: none;
-    &.router-link-exact-active {
-      color: #a9c4ef;
-    }
-  }
-}
-h1 {
 }
 </style>

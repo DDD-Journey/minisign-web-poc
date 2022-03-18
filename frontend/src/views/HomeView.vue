@@ -1,6 +1,5 @@
 <template>
   <aside>
-    Side Text
   </aside>
   <section>
     <h1>Welcome to Minisign-Web PoC</h1>
@@ -35,7 +34,6 @@ export default class HomeView extends Vue {}
   padding-top: 50px;
 }
 h1 {
-  margin: 40px 0 0;
   text-shadow: 3px 3px 4px #777
 }
 a:link, a:visited {
