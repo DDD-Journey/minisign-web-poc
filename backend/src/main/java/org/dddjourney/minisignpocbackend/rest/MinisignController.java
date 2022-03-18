@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -71,7 +68,6 @@ public class MinisignController {
     @GetMapping(path = "download-files", produces = "application/zip")
     public ResponseEntity<Resource> downloadFiles(@RequestParam("file-path") String filePath) {
 
-        Path path = Paths.get(new File(filePath).getAbsolutePath());
         ByteArrayOutputStream byteArrayOutputStream = zipFileCreator.downloadZipFile(List.of(filePath));
         ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
 
