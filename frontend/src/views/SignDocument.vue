@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <aside>
+    Sie Text
+  </aside>
+  <section>
     <h1>Sign a document</h1>
     <p>
       Upload the document, the private key and type the password for the private key.
@@ -17,7 +20,7 @@
         <li>type: {{ signModule.files[0].type }}</li>
       </ul>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -46,17 +49,8 @@ export default class SignDocument extends Vue {
 </script>
 
 <style scoped>
-h1 {
-  margin: 40px 0 0;
-}
 a {
   color: #42b983;
-}
-.button {
-  padding: 10px;
-  background-color: cornsilk;
-  border: solid 1px lightgray;
-  border-radius: 5px;
 }
 .file-info {
   padding-top: 30px;

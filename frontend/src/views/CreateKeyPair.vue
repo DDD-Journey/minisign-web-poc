@@ -1,17 +1,21 @@
 <template>
-  <div>
+  <aside>
+    <h1>Überschrift</h1>
+    <p>Erläuterung was hier passiert</p>
+  </aside>
+  <section>
     <h1>Create a key Pair</h1>
     <p>
       Enter a password and click for action
     </p>
-    <div class="outerForm">
-      <div class="form">
-        <Password id="password" v-model="keysModule.password" />
+    <div>
+      <div>
+        <Password id="2password" v-model="keysModule.password" />
         <br /><br />
         <Button @click="crateKeyPair" label="Create Key Pair" />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -38,21 +42,4 @@ export default class CreateKeyPair extends Vue {
 </script>
 
 <style scoped>
-h1 {
-  margin: 40px 0 0;
-}
-.outerForm {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.form {
-  text-align: left;
-}
-.button {
-  padding: 10px;
-  background-color: cornsilk;
-  border: solid 1px lightgray;
-  border-radius: 5px;
-}
 </style>

@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <aside>
+    Sie Text
+  </aside>
+  <section>
     <h1>Sign a document</h1>
     <p>
       Some description
     </p>
     <file-upload v-model="verifyModule.files" />
     <Button @click="verifyFile" label="Verify Document" />
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -32,10 +35,4 @@ export default class VerifyDocument extends Vue {
 </script>
 
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-a {
-  color: #42b983;
-}
 </style>

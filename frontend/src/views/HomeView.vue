@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <aside>
+    Side Text
+  </aside>
+  <section>
     <h1>Welcome to Minisign-Web PoC</h1>
     <p>
       Choose one of the action below by clicking on it.
@@ -9,7 +12,7 @@
       <router-link to="/sign">Sign a document</router-link>
       <router-link to="/verify">Verify a document signing</router-link>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
