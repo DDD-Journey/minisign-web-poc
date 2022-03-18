@@ -39,15 +39,33 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(processResult), HttpStatus.CREATED);
     }
 
+    @PostMapping(path = "/sign-file", consumes = {"multipart/form-data"})
+    public ResponseEntity<ProcessResultResource> signFile(
+            @RequestParam("password") String password,
+            @RequestParam("unsigned-file") MultipartFile unsignedFile,
+            @RequestParam("secret-key-file") MultipartFile secretKeyFile,
+            @RequestParam("signature-file-name") String signatureFileName) {
+
+        ProcessResult processResult = minisignService.signFile(
+                password,
+                convertToBytes(unsignedFile),
+                convertToBytes(secretKeyFile),
+                signatureFileName
+        );
+
+        return new ResponseEntity<>(mapToProcessResultResource(processResult), HttpStatus.CREATED);
+    }
+
+
     private ProcessResultResource mapToProcessResultResource(ProcessResult processResult) {
         return ProcessResultResource.builder()
                 .processFeedback(processResult.getProcessFeedback())
                 .exitedGraceful(processResult.isExitedGraceful())
                 .processError(processResult.getProcessError())
                 .exitValue(processResult.getExitValue())
+                .createdFiles(processResult.getCreatedFiles())
                 .build();
     }
-
 
     @SneakyThrows
     private byte[] convertToBytes(MultipartFile signedFile) {

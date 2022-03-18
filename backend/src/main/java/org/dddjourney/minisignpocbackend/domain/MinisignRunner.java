@@ -86,6 +86,7 @@ public class MinisignRunner {
                 .exitedGraceful(exitedGraceful)
                 .processFeedback(processFeedbackBuffer.toString())
                 .processError(processErrorBuffer.toString())
+                .createdFile(signatureFile)
                 .build();
 
         log.debug("Process result: {}", processResult);
