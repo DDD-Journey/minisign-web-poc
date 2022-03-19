@@ -17,7 +17,7 @@ export function createKeys(req: Request, res: Response) {
     execProcess.stdout.on('data', (data) => {
         data = data.toString();
         // https://stackoverflow.com/questions/40576439/node-js-input-password-to-a-bin-file-being-run-via-spawn
-        // first time pw
+        // first time pw TODO use for loop here
         execProcess.stdin.write('t');
         execProcess.stdin.write('e');
         execProcess.stdin.write('s');
