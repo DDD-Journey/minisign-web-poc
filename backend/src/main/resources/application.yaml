@@ -1,11 +1,15 @@
 ############################################################################
-#                               Info
+#                            Application
 ############################################################################
-info:
-  application:
-    name: "Minisign Web - proof of concept"
-    description: "Proof of concept"
-    version: "0.0.1-SNAPSHOT"
+app:
+  info:
+    application:
+      name: "Minisign Web - proof of concept"
+      description: "Proof of concept"
+      version: "0.0.1-SNAPSHOT"
+  file-storage:
+    upload-folder: file-upload
+    download-folder: file-download
 
 ############################################################################
 #                               OpenApi
@@ -13,22 +17,21 @@ info:
 
 open-api-doc:
   application:
-    name: ${info.application.name}
-    description: ${info.application.description}
-    version: ${info.application.version}
-    port: ${server.port}
+    name: ${app-info.application.name}
+    description: ${app.info.application.description}
+    version: ${app.info.application.version}
+    port: ${app.server.port}
 
-#############################################
+############################################################################
 # Logging
-#############################################
+############################################################################
 logging:
   level:
     org.dddjourney: DEBUG
 
-#############################################
+############################################################################
 # Spring Boot Framework
-#############################################
-
+############################################################################
 spring:
   servlet:
     multipart:

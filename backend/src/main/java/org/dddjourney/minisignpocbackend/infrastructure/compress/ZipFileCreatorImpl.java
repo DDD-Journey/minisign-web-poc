@@ -1,8 +1,9 @@
-package org.dddjourney.minisignpocbackend.domain;
+package org.dddjourney.minisignpocbackend.infrastructure.compress;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.dddjourney.minisignpocbackend.business.rest.ZipFileCreator;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -14,7 +15,7 @@ import java.util.zip.ZipOutputStream;
 
 @Slf4j
 @Component
-public class ZipFileCreator {
+public class ZipFileCreatorImpl implements ZipFileCreator {
 
     @SneakyThrows
     public ByteArrayOutputStream downloadZipFile(List<String> fileNames) {

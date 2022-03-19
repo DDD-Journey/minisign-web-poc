@@ -1,21 +1,21 @@
-package org.dddjourney.minisignpocbackend.domain;
+package org.dddjourney.minisignpocbackend.business.domain;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
-public class ProcessResult {
+public class MinisignServiceResult {
 
+    private String sessionId;
     private int exitValue;
     private boolean exitedGraceful;
     private String processFeedback;
     private String processError;
     @Singular
     private List<String> createdFiles;
-
-
 }

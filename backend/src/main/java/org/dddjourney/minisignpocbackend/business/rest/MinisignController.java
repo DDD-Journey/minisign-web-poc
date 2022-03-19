@@ -1,10 +1,9 @@
-package org.dddjourney.minisignpocbackend.rest;
+package org.dddjourney.minisignpocbackend.business.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.dddjourney.minisignpocbackend.domain.MinisignService;
-import org.dddjourney.minisignpocbackend.domain.ProcessResult;
-import org.dddjourney.minisignpocbackend.domain.ZipFileCreator;
+import org.dddjourney.minisignpocbackend.business.domain.MinisignService;
+import org.dddjourney.minisignpocbackend.business.domain.MinisignServiceResult;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -38,13 +37,13 @@ public class MinisignController {
             @RequestParam("public-key-file") MultipartFile publicKeyFile) {
 
 
-        ProcessResult processResult = minisignService.verifyFile(
+        MinisignServiceResult serviceResult = minisignService.verifyFile(
                 convertToBytes(signedFile),
                 convertToBytes(signatureFile),
                 convertToBytes(publicKeyFile)
         );
 
-        return new ResponseEntity<>(mapToProcessResultResource(processResult), HttpStatus.CREATED);
+        return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/sign-file", consumes = {"multipart/form-data"})
@@ -54,14 +53,14 @@ public class MinisignController {
             @RequestParam("secret-key-file") MultipartFile secretKeyFile,
             @RequestParam("signature-file-name") String signatureFileName) {
 
-        ProcessResult processResult = minisignService.signFile(
+        MinisignServiceResult serviceResult = minisignService.signFile(
                 password,
                 convertToBytes(unsignedFile),
                 convertToBytes(secretKeyFile),
                 signatureFileName
         );
 
-        return new ResponseEntity<>(mapToProcessResultResource(processResult), HttpStatus.CREATED);
+        return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
     @SneakyThrows
@@ -80,13 +79,14 @@ public class MinisignController {
                 .body(resource);
     }
 
-    private ProcessResultResource mapToProcessResultResource(ProcessResult processResult) {
+    private ProcessResultResource mapToProcessResultResource(MinisignServiceResult serviceResult) {
         return ProcessResultResource.builder()
-                .processFeedback(processResult.getProcessFeedback())
-                .exitedGraceful(processResult.isExitedGraceful())
-                .processError(processResult.getProcessError())
-                .exitValue(processResult.getExitValue())
-                .createdFiles(processResult.getCreatedFiles())
+                .sessionId(serviceResult.getSessionId())
+                .processFeedback(serviceResult.getProcessFeedback())
+                .exitedGraceful(serviceResult.isExitedGraceful())
+                .processError(serviceResult.getProcessError())
+                .exitValue(serviceResult.getExitValue())
+                .createdFiles(serviceResult.getCreatedFiles())
                 .build();
     }
 

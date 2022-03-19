@@ -1,7 +1,8 @@
-package org.dddjourney.minisignpocbackend.domain;
+package org.dddjourney.minisignpocbackend.infrastructure.process;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.dddjourney.minisignpocbackend.business.domain.Minisign;
 import org.springframework.stereotype.Component;
 
 import java.io.OutputStream;
@@ -12,10 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class MinisignRunner {
+public class InternalMinisignProcess implements Minisign {
 
     @SneakyThrows
-    public ProcessResult version() {
+    public InternalMinisignResult version() {
         String[] command = {"minisign", "-v"};
 
         log.debug("Process command {}", Arrays.toString(command));
@@ -27,19 +28,19 @@ public class MinisignRunner {
 
         boolean exitedGraceful = waitForCompletion(process);
 
-        ProcessResult processResult = ProcessResult.builder()
+        InternalMinisignResult internalMinisignResult = InternalMinisignResult.builder()
                 .processFeedback(processFeedbackBuffer.toString())
                 .processError(processErrorBuffer.toString())
                 .exitedGraceful(exitedGraceful)
                 .exitValue(process.exitValue())
                 .build();
 
-        log.debug("Process result: {}", processResult);
-        return processResult;
+        log.debug("Process result: {}", internalMinisignResult);
+        return internalMinisignResult;
     }
 
     @SneakyThrows
-    public ProcessResult verifyFile(String payloadFile, String signatureFile, String publicKeyFile) {
+    public InternalMinisignResult verifyFile(String payloadFile, String signatureFile, String publicKeyFile) {
         String[] command = {"minisign", "-Vm", payloadFile, "-x", signatureFile,"-p", publicKeyFile};
 
         log.debug("Process command {}", Arrays.toString(command));
@@ -53,19 +54,19 @@ public class MinisignRunner {
 
         boolean exitedGraceful = waitForCompletion(process);
 
-        ProcessResult processResult = ProcessResult.builder()
+        InternalMinisignResult internalMinisignResult = InternalMinisignResult.builder()
                 .exitedGraceful(exitedGraceful)
                 .exitValue(process.exitValue())
                 .processFeedback(processFeedbackBuffer.toString())
                 .processError(processErrorBuffer.toString())
                 .build();
 
-        log.debug("Process result: {}", processResult);
-        return processResult;
+        log.debug("Process result: {}", internalMinisignResult);
+        return internalMinisignResult;
     }
 
     @SneakyThrows
-    public ProcessResult signFile(String password, String payloadFile, String secretKeyFile, String signatureFile) {
+    public InternalMinisignResult signFile(String password, String payloadFile, String secretKeyFile, String signatureFile) {
         String[] command = {"minisign", "-Sm", payloadFile, "-s", secretKeyFile, "-x", signatureFile};
 
         log.debug("Process command {}", Arrays.toString(command));
@@ -81,7 +82,7 @@ public class MinisignRunner {
 
         boolean exitedGraceful = waitForCompletion(process);
 
-        ProcessResult processResult = ProcessResult.builder()
+        InternalMinisignResult internalMinisignResult = InternalMinisignResult.builder()
                 .exitValue(process.exitValue())
                 .exitedGraceful(exitedGraceful)
                 .processFeedback(processFeedbackBuffer.toString())
@@ -89,8 +90,8 @@ public class MinisignRunner {
                 .createdFile(signatureFile)
                 .build();
 
-        log.debug("Process result: {}", processResult);
-        return processResult;
+        log.debug("Process result: {}", internalMinisignResult);
+        return internalMinisignResult;
     }
 
     private StringBuffer bufferProcessError(Process process) {

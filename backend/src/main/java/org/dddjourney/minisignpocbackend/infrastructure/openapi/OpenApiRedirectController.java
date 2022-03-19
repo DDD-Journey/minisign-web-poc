@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend.application.openapi;
+package org.dddjourney.minisignpocbackend.infrastructure.openapi;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

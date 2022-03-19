@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend.rest;
+package org.dddjourney.minisignpocbackend.business.rest;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;

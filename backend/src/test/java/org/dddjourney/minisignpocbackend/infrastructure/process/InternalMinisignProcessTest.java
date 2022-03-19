@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend.domain;
+package org.dddjourney.minisignpocbackend.infrastructure.process;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
@@ -13,27 +13,27 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MinisignRunnerTest {
+class InternalMinisignProcessTest {
 
     static final String TEST_PASSWORD = "test123";
     static final int EXIT_VALUE_SUCCESS = 0;
 
-    MinisignRunner subject;
+    InternalMinisignProcess subject;
 
     @BeforeEach
     void setUp() {
-        subject = new MinisignRunner();
+        subject = new InternalMinisignProcess();
     }
 
     @Test
     void runVersion() {
         // when
-        ProcessResult processResult = subject.version();
+        InternalMinisignResult internalMinisignResult = subject.version();
 
         // then
-        assertThat(processResult.getProcessFeedback()).contains("minisign 0.10");
-        assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
-        assertThat(processResult.isExitedGraceful()).isTrue();
+        assertThat(internalMinisignResult.getProcessFeedback()).contains("minisign 0.10");
+        assertThat(internalMinisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(internalMinisignResult.isExitedGraceful()).isTrue();
     }
 
     @Test
@@ -44,12 +44,12 @@ class MinisignRunnerTest {
         String publicKeyFile = "src/test/resources/minisign/minisign_public_key.pub";
 
         // when
-        ProcessResult processResult = subject.verifyFile(signedFile, signatureFile, publicKeyFile);
+        InternalMinisignResult internalMinisignResult = subject.verifyFile(signedFile, signatureFile, publicKeyFile);
 
         // then
-        assertThat(processResult.getProcessFeedback()).contains("Signature and comment signature verified");
-        assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
-        assertThat(processResult.isExitedGraceful()).isTrue();
+        assertThat(internalMinisignResult.getProcessFeedback()).contains("Signature and comment signature verified");
+        assertThat(internalMinisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(internalMinisignResult.isExitedGraceful()).isTrue();
     }
 
     @Test
@@ -61,13 +61,13 @@ class MinisignRunnerTest {
         String signatureFile = buildFilePathString(tempDir, "test_payload_file.txt.minisig");
 
         // when
-        ProcessResult processResult = subject.signFile(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
+        InternalMinisignResult internalMinisignResult = subject.signFile(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
 
         // then
-        assertThat(processResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
-        assertThat(processResult.isExitedGraceful()).isTrue();
+        assertThat(internalMinisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(internalMinisignResult.isExitedGraceful()).isTrue();
         assertThat(readFile(signatureFile)).contains("file:test_payload_file.txt");
-        assertThat(processResult.getProcessFeedback()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
+        assertThat(internalMinisignResult.getProcessFeedback()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
     }
 
     private String buildFilePathString(Path tempDir, String fileName) {

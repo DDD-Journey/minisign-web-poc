@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend.application.openapi;
+package org.dddjourney.minisignpocbackend.infrastructure.openapi;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;

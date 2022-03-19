@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend.application.openapi;
+package org.dddjourney.minisignpocbackend.infrastructure.openapi;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
