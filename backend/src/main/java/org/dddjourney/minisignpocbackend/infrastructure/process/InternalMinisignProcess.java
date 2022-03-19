@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dddjourney.minisignpocbackend.business.domain.Minisign;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -66,8 +67,8 @@ public class InternalMinisignProcess implements Minisign {
     }
 
     @SneakyThrows
-    public InternalMinisignResult signFile(String password, String payloadFile, String secretKeyFile, String signatureFile) {
-        String[] command = {"minisign", "-Sm", payloadFile, "-s", secretKeyFile, "-x", signatureFile};
+    public InternalMinisignResult signFile(String password, String payloadFile, String secretKeyFile, File signatureFile) {
+        String[] command = {"minisign", "-Sm", payloadFile, "-s", secretKeyFile, "-x", signatureFile.getAbsolutePath()};
 
         log.debug("Process command {}", Arrays.toString(command));
 

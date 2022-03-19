@@ -9,6 +9,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,8 +40,9 @@ public class MinisignService {
                 publicKeyFile.getCanonicalPath()
         );
 
-        log.debug("End - Verify file with sessionId '{}' and with process result '{}'", sessionId, minisignResult);
-        return mapToResult(sessionId, minisignResult);
+        MinisignServiceResult serviceResult = mapToResult(sessionId, minisignResult);
+        log.debug("End - Verify file with process result '{}'", serviceResult);
+        return serviceResult;
     }
 
     @SneakyThrows
@@ -52,17 +54,20 @@ public class MinisignService {
 
         File unsignedFile = fileStorage.writeTempFile(unsignedFileContent, buildPath(tempDirectory, "/unsigned-file"));
         File secretKeyFile = fileStorage.writeTempFile(secretKeyFileContent, buildPath(tempDirectory, "/secret-key-file"));
-        Path signatureFilePath = buildPath(tempDirectory, signatureFileName);
+        File signatureFile = buildPath(tempDirectory, signatureFileName).toFile();
 
         MinisignResult minisignResult = minisign.signFile(
                 password,
                 unsignedFile.getCanonicalPath(),
                 secretKeyFile.getCanonicalPath(),
-                signatureFilePath.toString()
+                signatureFile
         );
 
-        log.debug("End - Sign file with sessionId '{}' and with process result '{}'", sessionId, minisignResult);
-        return mapToResult(sessionId, minisignResult);
+        fileStorage.moveToPermanentFolder(signatureFile, sessionId);
+
+        MinisignServiceResult serviceResult = mapToResult(sessionId, minisignResult);
+        log.debug("End - Sign file with process result '{}'", serviceResult);
+        return serviceResult;
     }
 
     private Path buildPath(Path tempDirectory, String fileName) {
@@ -78,7 +83,7 @@ public class MinisignService {
                 .sessionId(sessionId)
                 .exitValue(minisignResult.getExitValue())
                 .exitedGraceful(minisignResult.isExitedGraceful())
-                .createdFiles(minisignResult.getCreatedFiles())
+                .createdFiles(minisignResult.getCreatedFiles().stream().map(file -> file.getName()).collect(Collectors.toList()))
                 .processFeedback(minisignResult.getProcessFeedback())
                 .processError(minisignResult.getProcessError())
                 .build();

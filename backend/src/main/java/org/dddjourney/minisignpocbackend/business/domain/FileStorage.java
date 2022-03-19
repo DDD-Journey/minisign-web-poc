@@ -9,4 +9,5 @@ public interface FileStorage {
 
     Path createTempDirectory(String sessionId);
 
+    File moveToPermanentFolder(File signatureFilePath, String sessionId);
 }

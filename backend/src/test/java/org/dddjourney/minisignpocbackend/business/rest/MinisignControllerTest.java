@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @Import(ZipFileExtractor.class)
 class MinisignControllerTest {
 
@@ -58,12 +60,13 @@ class MinisignControllerTest {
                         .file(publicKeyFile))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().json(
-                        "{\"exitValue\":0,"
-                                + "\"exitedGraceful\":true,"
-                                + "\"processFeedback\":\"Signature and comment signature verifiedTrusted comment: timestamp:1645981228\\tfile:test_payload_file.txt\\thashed\","
-                                + "\"processError\":\"\"}"
-                ));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.sessionId").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.exitValue").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.exitedGraceful").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.processError").isEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdFiles").isEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.processFeedback")
+                        .value("Signature and comment signature verifiedTrusted comment: timestamp:1645981228\tfile:test_payload_file.txt\thashed"));
     }
 
     @Test
@@ -87,6 +90,7 @@ class MinisignControllerTest {
                         .params(CollectionUtils.toMultiValueMap(params)))
                 .andDo(print())
                 .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.sessionId").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.exitValue").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.exitedGraceful").value(true))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.processError").isEmpty())

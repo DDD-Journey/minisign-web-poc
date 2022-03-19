@@ -1,5 +1,6 @@
 package org.dddjourney.minisignpocbackend.business.domain;
 
+import java.io.File;
 import java.util.List;
 
 public interface MinisignResult {
@@ -12,6 +13,6 @@ public interface MinisignResult {
 
     String getProcessError();
 
-    List<String> getCreatedFiles();
+    List<File> getCreatedFiles();
 
 }

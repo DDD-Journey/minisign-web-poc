@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Singular;
 import org.dddjourney.minisignpocbackend.business.domain.MinisignResult;
 
+import java.io.File;
 import java.util.List;
 
 @Data
@@ -16,5 +17,5 @@ public class InternalMinisignResult implements MinisignResult {
     private String processFeedback;
     private String processError;
     @Singular
-    private List<String> createdFiles;
+    private List<File> createdFiles;
 }

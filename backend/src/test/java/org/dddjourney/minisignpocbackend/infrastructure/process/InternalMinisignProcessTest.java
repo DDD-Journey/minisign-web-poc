@@ -5,11 +5,13 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,7 +60,7 @@ class InternalMinisignProcessTest {
         // given
         String payloadFile = "src/test/resources/minisign/test_payload_file.txt";
         String secretKeyFile = "src/test/resources/minisign/minisign_secret_key.key";
-        String signatureFile = buildFilePathString(tempDir, "test_payload_file.txt.minisig");
+        File signatureFile = buildFile(tempDir, "test_payload_file.txt.minisig");
 
         // when
         InternalMinisignResult internalMinisignResult = subject.signFile(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
@@ -70,11 +72,11 @@ class InternalMinisignProcessTest {
         assertThat(internalMinisignResult.getProcessFeedback()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
     }
 
-    private String buildFilePathString(Path tempDir, String fileName) {
-        return tempDir.toString() + "/" + fileName;
+    private File buildFile(Path tempDir, String fileName) {
+        return Paths.get(tempDir.toString() , fileName).toFile();
     }
 
-    private String readFile(String signatureFile) throws IOException {
-        return FileUtils.readFileToString(new File(signatureFile), StandardCharsets.UTF_8);
+    private String readFile(File signatureFile) throws IOException {
+        return FileUtils.readFileToString(signatureFile, StandardCharsets.UTF_8);
     }
 }
