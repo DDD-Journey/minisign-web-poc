@@ -15,12 +15,14 @@ export class VerifyStore extends VuexModule {
   async verifyFile() {
     if (this.files) {
       console.log(this.files);
-      const uploadData = new FormData();
-      uploadData.append('file', this.files[0]);
+      const formData = new FormData();
+      for (let i = 0; i < this.files.length; i++) {
+        formData.append(this.files[i].name, this.files[i])
+      }
       try {
         const response = await axios.post(
           'http://localhost:3000/verify',
-          uploadData,
+            formData,
           {
             headers: {
               'Content-Type': 'undefined',

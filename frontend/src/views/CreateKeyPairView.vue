@@ -1,5 +1,5 @@
 <template>
-  <aside>
+  <aside class="usecase-aside">
     <h1>Information</h1>
     <p>
       Here you can create a new key pair. The key pair consists of a private key
@@ -21,7 +21,7 @@
       <li>Click "Create Key Pair" Button</li>
     </ul>
   </aside>
-  <section>
+  <section class="usecase-section">
     <h1>Create a key Pair</h1>
     <div>
       <Password id="2password" v-model="keysModule.password" />
@@ -45,7 +45,7 @@ import Button from '@/components/Button.vue';
   },
   props: {},
 })
-export default class CreateKeyPair extends Vue {
+export default class CreateKeyPairView extends Vue {
   private keysModule = vxm.keys;
 
   private crateKeyPair() {

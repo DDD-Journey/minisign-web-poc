@@ -17,7 +17,9 @@ export class SignStore extends VuexModule {
       console.log(this.password);
       console.log(this.files);
       const formData = new FormData();
-      formData.append('file', this.files[0]);
+      for (let i = 0; i < this.files.length; i++) {
+        formData.append(this.files[i].name, this.files[i])
+      }
       formData.append('password', this.password);
       try {
         const response = await axios.post(

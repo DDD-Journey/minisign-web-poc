@@ -1,6 +1,5 @@
 <template>
-  <aside></aside>
-  <section>
+  <section class="common-section">
     <h1>Welcome to Minisign-Web PoC</h1>
     <p>Choose one of the action below by clicking on it.</p>
     <div class="actionBox">

@@ -1,6 +1,5 @@
 <template>
-  <aside></aside>
-  <section>
+  <section class="common-section">
     <p>
       For the Project Repository,<br />
       check out the

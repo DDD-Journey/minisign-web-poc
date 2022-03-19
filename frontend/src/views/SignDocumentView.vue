@@ -1,5 +1,5 @@
 <template>
-  <aside>
+  <aside class="usecase-aside">
     <h1>Information</h1>
     <p>
       Upload the document and the private key in a ZIP file here and enter the
@@ -19,7 +19,7 @@
       <li>Click "Sign Document" Button</li>
     </ul>
   </aside>
-  <section>
+  <section class="usecase-section">
     <h1>Sign a document</h1>
     <FileUpload v-model="signModule.files" />
     <br />
@@ -45,7 +45,7 @@ import Button from '@/components/Button.vue';
   },
   props: {},
 })
-export default class SignDocument extends Vue {
+export default class SignDocumentView extends Vue {
   private signModule = vxm.sign;
 
   private signFile() {

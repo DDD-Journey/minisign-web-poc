@@ -1,5 +1,5 @@
 <template>
-  <aside>
+  <aside class="usecase-aside">
     <h1>Information</h1>
     <p>
       Upload the document, the signing file and the public key of the signer in
@@ -12,7 +12,7 @@
       <li>Click "Verify Document" Button</li>
     </ul>
   </aside>
-  <section>
+  <section class="usecase-section">
     <h1>Sign a document</h1>
     <file-upload v-model="verifyModule.files" />
     <div class="submit-container">
@@ -38,7 +38,7 @@ import { vxm } from '@/store';
   },
   props: {},
 })
-export default class VerifyDocument extends Vue {
+export default class VerifyDocumentView extends Vue {
   private verifyModule = vxm.verify;
 
   private verifyFile() {

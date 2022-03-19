@@ -1,4 +1,8 @@
-<template>by DDD-Journey</template>
+<template>
+  <footer>
+    by DDD-Journey
+  </footer>
+</template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
@@ -10,4 +14,11 @@ import { Options, Vue } from 'vue-class-component';
 export default class extends Vue {}
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+footer {
+  background-color: #575759;
+  padding: 10px 10px 10px 30px;
+  text-align: left;
+  color: white;
+}
+</style>
