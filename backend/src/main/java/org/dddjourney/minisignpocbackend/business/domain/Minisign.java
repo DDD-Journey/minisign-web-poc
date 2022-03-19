@@ -1,12 +1,10 @@
 package org.dddjourney.minisignpocbackend.business.domain;
 
-import org.dddjourney.minisignpocbackend.infrastructure.process.InternalMinisignResult;
-
 public interface Minisign {
 
-    InternalMinisignResult version();
+    MinisignResult version();
 
-    InternalMinisignResult verifyFile(String payloadFile, String signatureFile, String publicKeyFile);
+    MinisignResult verifyFile(String payloadFile, String signatureFile, String publicKeyFile);
 
-    InternalMinisignResult signFile(String password, String payloadFile, String secretKeyFile, String signatureFile);
+    MinisignResult signFile(String password, String payloadFile, String secretKeyFile, String signatureFile);
 }
