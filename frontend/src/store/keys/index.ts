@@ -1,6 +1,6 @@
 import { createModule, action } from 'vuex-class-component';
-import password from '@/components/Password.vue';
 import axios from 'axios';
+import { downloadFile } from "@/store/share/downloadFile";
 
 const VuexModule = createModule({
   namespaced: 'keys',
@@ -9,13 +9,15 @@ const VuexModule = createModule({
 
 export class KeysStore extends VuexModule {
   private password = '';
+  private isSuccess = false;
+  private serverResponse = '';
 
   @action
   async createPrivateKeys() {
     console.log(`Store: ${this.password}`);
     if (this.password) {
       try {
-        await axios.post(
+        const response = await axios.post(
           'http://localhost:3000/create',
           {
             password: this.password,
@@ -24,9 +26,14 @@ export class KeysStore extends VuexModule {
             headers: {
               'Content-Type': 'application/json',
             },
+            responseType: 'blob'
           }
         );
-      } catch (error) {
+        console.log(response.data);
+        this.isSuccess = true;
+        this.serverResponse = response.data;
+        downloadFile(response.data, 'minisign-keys.zip');
+2      } catch (error) {
         if (axios.isAxiosError(error)) {
           console.log(error);
         } else {
@@ -34,8 +41,5 @@ export class KeysStore extends VuexModule {
         }
       }
     }
-    // Todo something
-    // Call Backend
-    // Return a zip file with a private and public key
   }
 }

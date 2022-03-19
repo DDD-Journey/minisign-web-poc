@@ -18,6 +18,10 @@
     <div class="submit-container">
       <Button @click="verifyFile" label="Verify Document" />
     </div>
+    <div v-if="verifyModule.isVerified">
+      <h2>Result</h2>
+      <p>{{ verifyModule.verificationResult }}</p>
+    </div>
   </section>
 </template>
 

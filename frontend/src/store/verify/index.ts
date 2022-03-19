@@ -1,5 +1,5 @@
 import { createModule, action } from 'vuex-class-component';
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 const VuexModule = createModule({
   namespaced: 'verify',
@@ -8,6 +8,8 @@ const VuexModule = createModule({
 
 export class VerifyStore extends VuexModule {
   private files!: FileList;
+  private isVerified = false;
+  private verificationResult = '';
 
   @action
   async verifyFile() {
@@ -17,7 +19,7 @@ export class VerifyStore extends VuexModule {
       uploadData.append('file', this.files[0]);
       try {
         const response = await axios.post(
-          'http://localhost:3000/upload',
+          'http://localhost:3000/verify',
           uploadData,
           {
             headers: {
@@ -25,6 +27,8 @@ export class VerifyStore extends VuexModule {
             },
           }
         );
+        this.verificationResult = response.data.message;
+        this.isVerified = true;
         console.log(response);
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -34,8 +38,5 @@ export class VerifyStore extends VuexModule {
         }
       }
     }
-    // Todo something
-    // Call Backend
-    // Resturn signed file
   }
 }
