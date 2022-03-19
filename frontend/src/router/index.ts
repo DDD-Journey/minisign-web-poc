@@ -11,27 +11,31 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     component: CommonLayout,
-    children: [{ path: '', name: 'home', component: HomeView }]
+    children: [{ path: '', name: 'home', component: HomeView }],
   },
   {
     path: '/about',
     component: CommonLayout,
-    children: [{ path: '', name: 'about', component: AboutView }]
+    children: [{ path: '', name: 'about', component: AboutView }],
   },
   {
     path: '/create',
     component: UseCaseLayout,
-    children: [{ path: '', name: 'createKeyPair', component: CreateKeyPairView }]
+    children: [
+      { path: '', name: 'createKeyPair', component: CreateKeyPairView },
+    ],
   },
   {
     path: '/sign',
     component: UseCaseLayout,
-    children: [{ path: '', name: 'signDocument', component: SignDocumentView }]
+    children: [{ path: '', name: 'signDocument', component: SignDocumentView }],
   },
   {
     path: '/verify',
     component: UseCaseLayout,
-    children: [{ path: '', name: 'verifyDocument', component: VerifyDocumentView }]
+    children: [
+      { path: '', name: 'verifyDocument', component: VerifyDocumentView },
+    ],
   },
 ];
 

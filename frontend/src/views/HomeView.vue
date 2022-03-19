@@ -1,6 +1,7 @@
 <template>
   <section class="common-section">
     <h1>Welcome to Minisign-Web PoC</h1>
+    <img src="../assets/letter-576461_1280.png" height="300" />
     <p>Choose one of the action below by clicking on it.</p>
     <div class="actionBox">
       <router-link to="/create">Create a key pair</router-link>
@@ -30,7 +31,9 @@ export default class HomeView extends Vue {}
 }
 a:link,
 a:visited {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
   height: 100px;
   width: 200px;
@@ -38,7 +41,7 @@ a:visited {
   border: solid 1px lightgray;
   box-shadow: 5px 5px 10px lightgray;
   border-radius: 10px;
-  background-color: #3b85e5;
+  background-color: #517cc8;
   text-align: center;
   text-decoration: none;
 }

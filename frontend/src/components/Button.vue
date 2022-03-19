@@ -19,13 +19,13 @@ export default class Button extends Vue {}
 <style scoped lang="scss">
 .button {
   padding: 14px 20px;
-  background-color: #3b85e5;
+  background-color: #3d6ec2;
   border: solid 1px lightgray;
   border-radius: 5px;
   color: white;
   cursor: pointer;
 }
 .button:hover {
-  background-color: #1a67cb;
+  background-color: #31589b;
 }
 </style>

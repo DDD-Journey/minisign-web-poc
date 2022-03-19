@@ -30,7 +30,8 @@ body {
   margin: 0 auto;
 }
 #app {
-  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  //font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font: 1em/1.4 Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

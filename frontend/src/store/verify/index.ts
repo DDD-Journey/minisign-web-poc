@@ -17,12 +17,12 @@ export class VerifyStore extends VuexModule {
       console.log(this.files);
       const formData = new FormData();
       for (let i = 0; i < this.files.length; i++) {
-        formData.append(this.files[i].name, this.files[i])
+        formData.append(this.files[i].name, this.files[i]);
       }
       try {
         const response = await axios.post(
           'http://localhost:3000/verify',
-            formData,
+          formData,
           {
             headers: {
               'Content-Type': 'undefined',

@@ -1,6 +1,6 @@
 import { createModule, action } from 'vuex-class-component';
 import axios from 'axios';
-import { downloadFile } from "@/store/share/downloadFile";
+import { downloadFile } from '@/store/share/downloadFile';
 
 const VuexModule = createModule({
   namespaced: 'sign',
@@ -18,18 +18,18 @@ export class SignStore extends VuexModule {
       console.log(this.files);
       const formData = new FormData();
       for (let i = 0; i < this.files.length; i++) {
-        formData.append(this.files[i].name, this.files[i])
+        formData.append(this.files[i].name, this.files[i]);
       }
       formData.append('password', this.password);
       try {
         const response = await axios.post(
           'http://localhost:3000/sign',
-            formData,
+          formData,
           {
             headers: {
               'Content-Type': 'undefined',
             },
-            responseType: 'blob'
+            responseType: 'blob',
           }
         );
         downloadFile(response.data, `minisign-signed.zip`);

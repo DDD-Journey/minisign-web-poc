@@ -77,7 +77,7 @@ export default class FileUpload extends Vue {
   height: 200px;
   outline: 2px dashed grey; /* the dash box */
   outline-offset: -10px;
-  background: #e6f6ff;
+  background: #ecf0f9;
   color: dimgray;
   padding: 30px;
   text-align: center;
@@ -87,7 +87,7 @@ export default class FileUpload extends Vue {
   margin-bottom: 50px;
 }
 .hightlight {
-  background-color: #ccecff;
+  background-color: #c5d3ed;
 }
 .visually-hidden {
   position: absolute !important;
@@ -106,20 +106,17 @@ input.visually-hidden:focus-within + label {
 .dropzone-button {
   padding: 8px 12px;
   margin-top: 50px;
-  background-color: #3b85e5;
+  background-color: #3d6ec2;
   border: solid 1px lightgray;
   border-radius: 5px;
   color: white;
   cursor: pointer;
 }
 .dropzone-button:hover {
-  background-color: #1a67cb;
+  background-color: #31589b;
 }
 .dropzone-filename-box {
   margin-top: 20px;
   padding: 5px;
-  //border:1px solid grey;
-  //border-radius: 5px;
-  //background-color: #e6e6e6;
 }
 </style>

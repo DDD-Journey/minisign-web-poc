@@ -1,6 +1,6 @@
 import { createModule, action } from 'vuex-class-component';
 import axios from 'axios';
-import { downloadFile } from "@/store/share/downloadFile";
+import { downloadFile } from '@/store/share/downloadFile';
 
 const VuexModule = createModule({
   namespaced: 'keys',
@@ -26,14 +26,15 @@ export class KeysStore extends VuexModule {
             headers: {
               'Content-Type': 'application/json',
             },
-            responseType: 'blob'
+            responseType: 'blob',
           }
         );
         console.log(response.data);
         this.isSuccess = true;
         this.serverResponse = response.data;
         downloadFile(response.data, 'minisign-keys.zip');
-2      } catch (error) {
+        2;
+      } catch (error) {
         if (axios.isAxiosError(error)) {
           console.log(error);
         } else {

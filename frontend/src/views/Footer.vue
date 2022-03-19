@@ -1,6 +1,7 @@
 <template>
   <footer>
     by DDD-Journey
+    <router-link to="/about" class="footer-link">About</router-link>
   </footer>
 </template>
 
@@ -20,5 +21,11 @@ footer {
   padding: 10px 10px 10px 30px;
   text-align: left;
   color: white;
+}
+a.footer-link {
+  color: white;
+  &.router-link-exact-active {
+    color: #a9c4ef;
+  }
 }
 </style>
