@@ -16,15 +16,14 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 @Component
 public class ZipFileCreatorImpl implements ZipFileCreator {
-
+    
     @SneakyThrows
-    public ByteArrayOutputStream downloadZipFile(List<String> fileNames) {
+    public ByteArrayOutputStream downloadZipFile(List<File> files) {
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         ZipOutputStream zipOutputStream = new ZipOutputStream(byteOutputStream);
 
-        for (String filename : fileNames) {
-            File file = new File(filename);
-            ZipEntry zipEntry = new ZipEntry(filename);
+        for (File file : files) {
+            ZipEntry zipEntry = new ZipEntry(file.getName());
             zipOutputStream.putNextEntry(zipEntry);
             FileInputStream fileInputStream = new FileInputStream(file);
             IOUtils.copy(fileInputStream, zipOutputStream);
@@ -35,7 +34,6 @@ public class ZipFileCreatorImpl implements ZipFileCreator {
         zipOutputStream.close();
 
         return byteOutputStream;
-
     }
 
 }

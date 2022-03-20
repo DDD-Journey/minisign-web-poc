@@ -20,19 +20,19 @@ public class InternalFileStorage implements FileStorage {
     private final FileStorageProperties properties;
 
     @SneakyThrows
-    public File writeTempFile(byte[] signedFileContent, Path path) {
+    public File writeTempFileTo(byte[] signedFileContent, Path path) {
         File signedFile = path.toFile();
         FileUtils.writeByteArrayToFile(signedFile, signedFileContent);
         return signedFile;
     }
 
     @SneakyThrows
-    public Path createTempDirectory(String sessionId) {
+    public Path createTempDirectoryFor(String sessionId) {
         Path path = Paths.get(FileUtils.getTempDirectory().getAbsolutePath(), sessionId);
         return Files.createDirectories(path);
     }
 
-    public File moveToPermanentFolder(File file, String sessionId) {
+    public void moveToPermanentFolderFor(File file, String sessionId) {
         log.debug("Start - Moving file from '{}'", file.getAbsolutePath());
 
         Path downloadFolderPath = Paths.get(properties.getDownloadFolder(), sessionId);
@@ -48,7 +48,18 @@ public class InternalFileStorage implements FileStorage {
         }
 
         log.debug("End - Moving file to '{}'", destinationFile.getAbsolutePath());
-        return destinationFile;
+    }
+
+    @Override
+    public File[] findFilesInDownloadFolder(String sessionId) {
+        File directory = Paths.get(properties.getDownloadFolder(), sessionId).toFile();
+        if(!directory.exists() || !directory.isDirectory()) {
+            throw new IllegalArgumentException("Folder doesn't exists: " + directory.getAbsolutePath());
+        }
+
+        File[] files = directory.listFiles();
+        log.debug("'{}' files found in folder.", files != null ? files.length : 0);
+        return files;
     }
 
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,11 +30,11 @@ public class MinisignService {
         String sessionId = createSessionId();
         log.debug("Start - Verify file with sessionId '{}'", sessionId);
 
-        Path tempDirectory = fileStorage.createTempDirectory(sessionId);
+        Path tempDirectory = fileStorage.createTempDirectoryFor(sessionId);
 
-        File signedFile = fileStorage.writeTempFile(signedFileContent, buildPath(tempDirectory, "/signed-file"));
-        File signatureFile = fileStorage.writeTempFile(signatureFileContent, buildPath(tempDirectory, "/signature-file"));
-        File publicKeyFile = fileStorage.writeTempFile(publicKeyFileContent, buildPath(tempDirectory, "/public-key-file"));
+        File signedFile = fileStorage.writeTempFileTo(signedFileContent, buildPath(tempDirectory, "/signed-file"));
+        File signatureFile = fileStorage.writeTempFileTo(signatureFileContent, buildPath(tempDirectory, "/signature-file"));
+        File publicKeyFile = fileStorage.writeTempFileTo(publicKeyFileContent, buildPath(tempDirectory, "/public-key-file"));
 
         MinisignResult minisignResult = minisign.verifyFile(
                 signedFile.getCanonicalPath(),
@@ -50,10 +52,10 @@ public class MinisignService {
         String sessionId = createSessionId();
         log.debug("Start - Sign file with sessionId '{}'", sessionId);
 
-        Path tempDirectory = fileStorage.createTempDirectory(sessionId);
+        Path tempDirectory = fileStorage.createTempDirectoryFor(sessionId);
 
-        File unsignedFile = fileStorage.writeTempFile(unsignedFileContent, buildPath(tempDirectory, "/unsigned-file"));
-        File secretKeyFile = fileStorage.writeTempFile(secretKeyFileContent, buildPath(tempDirectory, "/secret-key-file"));
+        File unsignedFile = fileStorage.writeTempFileTo(unsignedFileContent, buildPath(tempDirectory, "/unsigned-file"));
+        File secretKeyFile = fileStorage.writeTempFileTo(secretKeyFileContent, buildPath(tempDirectory, "/secret-key-file"));
         File signatureFile = buildPath(tempDirectory, signatureFileName).toFile();
 
         MinisignResult minisignResult = minisign.signFile(
@@ -63,11 +65,16 @@ public class MinisignService {
                 signatureFile
         );
 
-        fileStorage.moveToPermanentFolder(signatureFile, sessionId);
+        fileStorage.moveToPermanentFolderFor(signatureFile, sessionId);
 
         MinisignServiceResult serviceResult = mapToResult(sessionId, minisignResult);
         log.debug("End - Sign file with process result '{}'", serviceResult);
         return serviceResult;
+    }
+
+    public List<File> collectProducedFilesBy(String sessionId) {
+        log.debug("Start - Finding produced files by sessionId '{}'", sessionId);
+        return Arrays.asList(fileStorage.findFilesInDownloadFolder(sessionId));
     }
 
     private Path buildPath(Path tempDirectory, String fileName) {
@@ -83,7 +90,10 @@ public class MinisignService {
                 .sessionId(sessionId)
                 .exitValue(minisignResult.getExitValue())
                 .exitedGraceful(minisignResult.isExitedGraceful())
-                .createdFiles(minisignResult.getCreatedFiles().stream().map(file -> file.getName()).collect(Collectors.toList()))
+                .createdFiles(
+                        minisignResult.getCreatedFiles().stream()
+                                .map(File::getName)
+                                .collect(Collectors.toList()))
                 .processFeedback(minisignResult.getProcessFeedback())
                 .processError(minisignResult.getProcessError())
                 .build();

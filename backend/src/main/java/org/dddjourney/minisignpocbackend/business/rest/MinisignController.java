@@ -9,13 +9,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -64,19 +62,24 @@ public class MinisignController {
     }
 
     @SneakyThrows
-    @GetMapping(path = "download-files", produces = "application/zip")
-    public ResponseEntity<Resource> downloadFiles(@RequestParam("file-path") String filePath) {
+    @GetMapping(path = "download-files/{session-id}", produces = "application/zip")
+    public ResponseEntity<Resource> downloadFiles(@PathVariable("session-id") String sessionId) {
 
-        ByteArrayOutputStream byteArrayOutputStream = zipFileCreator.downloadZipFile(List.of(filePath));
-        ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
+        List<File> files = minisignService.collectProducedFilesBy(sessionId);
+        ByteArrayOutputStream compressedFilesStream = zipFileCreator.downloadZipFile(files);
+        ByteArrayResource resource = new ByteArrayResource(compressedFilesStream.toByteArray());
 
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"minisign.zip\"");
+        responseHeaders.set(HttpHeaders.CONTENT_DISPOSITION, buildContentDispositionHeaderValue(sessionId));
 
         return ResponseEntity.ok()
                 .headers(responseHeaders)
                 .contentLength(resource.contentLength())
                 .body(resource);
+    }
+
+    private String buildContentDispositionHeaderValue(String sessionId) {
+        return String.format("attachment; filename=\"minisign_%s.zip\"", sessionId);
     }
 
     private ProcessResultResource mapToProcessResultResource(MinisignServiceResult serviceResult) {

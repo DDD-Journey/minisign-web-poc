@@ -5,9 +5,11 @@ import java.nio.file.Path;
 
 public interface FileStorage {
 
-    File writeTempFile(byte[] signedFileContent, Path path);
+    File writeTempFileTo(byte[] signedFileContent, Path path);
 
-    Path createTempDirectory(String sessionId);
+    Path createTempDirectoryFor(String sessionId);
 
-    File moveToPermanentFolder(File signatureFilePath, String sessionId);
+    void moveToPermanentFolderFor(File signatureFilePath, String sessionId);
+
+    File[] findFilesInDownloadFolder(String sessionId);
 }

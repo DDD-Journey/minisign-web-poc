@@ -1,5 +1,6 @@
 package org.dddjourney.minisignpocbackend.business.rest;
 
+import com.jayway.jsonpath.JsonPath;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.CollectionUtils;
@@ -29,8 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(ZipFileExtractor.class)
 class MinisignControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired ZipFileExtractor zipFileExtractor;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    ZipFileExtractor zipFileExtractor;
 
     @SneakyThrows
     @Test
@@ -67,6 +71,7 @@ class MinisignControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdFiles").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.processFeedback")
                         .value("Signature and comment signature verifiedTrusted comment: timestamp:1645981228\tfile:test_payload_file.txt\thashed"));
+
     }
 
     @Test
@@ -82,7 +87,7 @@ class MinisignControllerTest {
         );
 
         // when-then
-        mockMvc.perform(MockMvcRequestBuilders
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .multipart("/sign-file")
                         .file(unsignedFile)
                         .file(signatureFile)
@@ -95,15 +100,13 @@ class MinisignControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.exitedGraceful").value(true))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.processError").isEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdFiles").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.processFeedback").value("Password: Deriving a key from the password and decrypting the secret key... done"));
-    }
+                .andExpect(MockMvcResultMatchers.jsonPath("$.processFeedback").value("Password: Deriving a key from the password and decrypting the secret key... done"))
+                .andReturn();
 
-    @Test
-    @SneakyThrows
-    void downloadFiles() {
-        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/download-files")
-                        .param("file-path", "src/test/resources/minisign/test_payload_file.txt.minisig"))
+        // and then
+        String sessionId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.sessionId");
+
+        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders.get("/download-files/{session-id}", sessionId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/zip"))
@@ -111,10 +114,18 @@ class MinisignControllerTest {
 
         List<ZipFileExtractor.FileMetaData> fileMetaDataList = zipFileExtractor.extractMetaData(contentAsByteArray);
 
-        assertThat(fileMetaDataList).extracting("fileName").containsExactly("src/test/resources/minisign/test_payload_file.txt.minisig");
+        assertThat(fileMetaDataList).extracting("fileName").containsExactly("test_payload_file.txt.minisig");
         assertThat(fileMetaDataList).extracting("fileSize").containsExactly(-1L);
+    }
 
-
+    @Test
+    @SneakyThrows
+    void whenDownloadFilesWithWrongSessionIdThenNotFound() {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/download-files")
+                        .param("session-id", "ANY_WRONG_SESSION_ID"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     private MockMultipartFile buildMockMultipartFile(String parameterName, String filePath) throws IOException {

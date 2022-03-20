@@ -1,9 +1,10 @@
 package org.dddjourney.minisignpocbackend.business.rest;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.List;
 
 public interface ZipFileCreator {
 
-    ByteArrayOutputStream downloadZipFile(List<String> fileNames);
+    ByteArrayOutputStream downloadZipFile(List<File> files);
 }
