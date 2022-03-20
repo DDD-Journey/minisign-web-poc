@@ -17,7 +17,7 @@ app:
 
 open-api-doc:
   application:
-    name: ${app-info.application.name}
+    name: ${app.info.application.name}
     description: ${app.info.application.description}
     version: ${app.info.application.version}
     port: ${app.server.port}

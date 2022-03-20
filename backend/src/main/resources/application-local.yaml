@@ -1,0 +1,7 @@
+############################################################################
+#                            Application
+############################################################################
+app:
+  file-storage:
+    upload-folder: build/file-upload
+    download-folder: build/file-download
