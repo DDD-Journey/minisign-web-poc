@@ -1,6 +1,6 @@
 # Compiled class file
 *.class
-/file-download/
+**/file-download/
 
 # Log file
 *.log
