@@ -44,6 +44,7 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:8082")
     @PostMapping(path = "/sign-file", consumes = {"multipart/form-data"})
     public ResponseEntity<ProcessResultResource> signFile(
             @RequestParam("password") String password,
@@ -61,6 +62,7 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:8082")
     @SneakyThrows
     @GetMapping(path = "download-files/{session-id}", produces = "application/zip")
     public ResponseEntity<Resource> downloadFiles(@PathVariable("session-id") String sessionId) {
