@@ -23,6 +23,7 @@ export function signFile(req: Request, res: Response) {
     })
 
     const fileName = 'minisign-signed.zip';
+
     res.sendFile(path.resolve('static', fileName),  (errors) => {
         if(errors) {
             console.log('Errors:', errors);

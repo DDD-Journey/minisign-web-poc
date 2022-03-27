@@ -2,11 +2,10 @@
   <aside class="usecase-aside">
     <h1>Information</h1>
     <p>
-      Upload the document and the private key in a ZIP file here and enter the
-      password for the private key to create a signing file. You can then
-      download this signing file. Now you can share your document with the
-      signing file and the public key. It is advisable to transfer the public
-      key in another way.
+      Upload the document and the private key here and enter the password for
+      the private key to create a signing file. You can then download this
+      signing file. Now you can share your document with the signing file and
+      the public key. It is advisable to transfer the public key in another way.
     </p>
     <p>
       Don't worry, we don't store the private key. This is only a PoC. It is
@@ -21,7 +20,9 @@
   </aside>
   <section class="usecase-section">
     <h1>Sign a document</h1>
-    <FileUpload v-model="signModule.files" />
+    <FileUpload v-model="signModule.documentFiles" title="Document" />
+    <br />
+    <FileUpload v-model="signModule.secretKeyFiles" title="Secret Key" />
     <br />
     <Password id="password" v-model="signModule.password" />
     <div class="submit-container">

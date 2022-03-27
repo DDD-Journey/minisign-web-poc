@@ -1,6 +1,6 @@
 import { createModule, action } from 'vuex-class-component';
-import axios from 'axios';
 import { downloadFile } from '@/store/share/downloadFile';
+import SignFileExchange from '@/store/sign/SignFileExchange';
 
 const VuexModule = createModule({
   namespaced: 'sign',
@@ -8,38 +8,36 @@ const VuexModule = createModule({
 });
 
 export class SignStore extends VuexModule {
-  private files!: FileList;
+  private documentFiles!: FileList;
+  private secretKeyFiles!: FileList;
   private password = '';
 
   @action
   async signFile() {
-    if (this.files) {
-      console.log(this.password);
-      console.log(this.files);
-      const formData = new FormData();
-      for (let i = 0; i < this.files.length; i++) {
-        formData.append(this.files[i].name, this.files[i]);
-      }
-      formData.append('password', this.password);
-      try {
-        const response = await axios.post(
-          'http://localhost:3000/sign',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'undefined',
-            },
-            responseType: 'blob',
-          }
-        );
-        downloadFile(response.data, `minisign-signed.zip`);
-        console.log(response);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.log(error);
-        } else {
-          console.log(error);
-        }
+    if (this.documentFiles && this.secretKeyFiles) {
+      console.log(`password: ${this.password}`);
+      console.log(`documentFile: `);
+      console.log(this.documentFiles[0]);
+      console.log(`secretKeyFile: `);
+      console.log(this.secretKeyFiles[0]);
+
+      const signatureFileName = this.documentFiles[0].name + '.minisig';
+      const signFileResponse = await SignFileExchange.callSignFileApi(
+        this.documentFiles[0],
+        this.secretKeyFiles[0],
+        this.password,
+        signatureFileName
+      );
+      console.log('signFileResponse');
+      console.log(signFileResponse);
+      const sessionId =
+        signFileResponse != undefined ? signFileResponse.sessionId : undefined;
+      if (sessionId) {
+        const downloadFilesResponse =
+          await SignFileExchange.callDownloadSignatureFileApi(sessionId);
+        console.log('DownloadFilesResponse');
+        console.log(downloadFilesResponse);
+        downloadFile(downloadFilesResponse, signatureFileName + '.zip');
       }
     }
   }

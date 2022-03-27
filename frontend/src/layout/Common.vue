@@ -21,6 +21,6 @@ main.common-layout {
 }
 section.common-section {
   text-align: center;
-  padding-top: 20px
+  padding-top: 20px;
 }
 </style>

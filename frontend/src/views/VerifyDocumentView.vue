@@ -2,9 +2,9 @@
   <aside class="usecase-aside">
     <h1>Information</h1>
     <p>
-      Upload the document, the signing file and the public key of the signer in
-      a ZIP file. Immediately after sending you will receive a response whether
-      the signing is valid or not.
+      Upload the document, the signing file and the public key of the signer.
+      Immediately after sending you will receive a response whether the signing
+      is valid or not.
     </p>
     <h1>Procedure</h1>
     <ul>
@@ -14,7 +14,11 @@
   </aside>
   <section class="usecase-section">
     <h1>Sign a document</h1>
-    <file-upload v-model="verifyModule.files" />
+    <file-upload v-model="verifyModule.files" title="Document" />
+    <br />
+    <file-upload v-model="verifyModule.files" title="Signatur" />
+    <br />
+    <file-upload v-model="verifyModule.files" title="Public Key" />
     <div class="submit-container">
       <Button @click="verifyFile" label="Verify Document" />
     </div>

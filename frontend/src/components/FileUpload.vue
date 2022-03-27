@@ -7,18 +7,22 @@
     @drop="onDrop"
     v-bind:class="{ hightlight: hightlight }"
   >
-    <div class="dropzone-text">Drag and Drop to upload</div>
+    <div class="dropzone-text">
+      <p>
+        <strong>{{ title }}</strong>
+      </p>
+      <p>Drag and Drop to upload</p>
+    </div>
     <input
       id="fileElem"
       type="file"
-      multiple
       accept="image/*"
       class="visually-hidden"
       @change="onFileChange"
     />
     <label for="fileElem" class="dropzone-button"> or, browse files </label>
     <div class="dropzone-filename-box">
-      {{ fileName }}
+      <span v-if="modelValue"> <strong>Filename: </strong>{{ fileName }} </span>
     </div>
   </div>
 </template>
@@ -30,6 +34,7 @@ import { Options, Vue } from 'vue-class-component';
   components: {},
   props: {
     modelValue: FileList,
+    title: String,
   },
 })
 // https://malcoded.com/posts/vue-file-upload-ts/ Good example
@@ -74,7 +79,7 @@ export default class FileUpload extends Vue {
 <style scoped lang="scss">
 .dropzone {
   width: 300px;
-  height: 200px;
+  //height: 200px;
   outline: 2px dashed grey; /* the dash box */
   outline-offset: -10px;
   background: #ecf0f9;
@@ -83,8 +88,8 @@ export default class FileUpload extends Vue {
   text-align: center;
 }
 .dropzone-text {
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .hightlight {
   background-color: #c5d3ed;
