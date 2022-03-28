@@ -28,6 +28,7 @@ public class MinisignController {
         return ResponseEntity.ok(minisignService.version());
     }
 
+    @CrossOrigin(origins = "http://localhost:8082")
     @PostMapping(path = "/verify-file", consumes = {"multipart/form-data"})
     public ResponseEntity<ProcessResultResource> verifyFile(
             @RequestParam("signed-file") MultipartFile signedFile,
