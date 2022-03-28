@@ -2,7 +2,8 @@ import { Request, Response } from 'express'
 import { IncomingForm } from 'formidable'
 
 export function upload(req: Request, res: Response) {
-    const form = new IncomingForm();
+    const form = new IncomingForm({ uploadDir: __dirname + './uploads/' });
+
     form.on('file', (field, file) => {
         // Do something with the file
         // e.g. save it to the database

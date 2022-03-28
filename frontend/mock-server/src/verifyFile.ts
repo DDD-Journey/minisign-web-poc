@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import path from "path";
 
 export function verifyFile(req: Request, res: Response) {
     console.log('Got body:', req.body);

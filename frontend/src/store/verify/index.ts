@@ -1,5 +1,5 @@
 import { createModule, action } from 'vuex-class-component';
-import axios from 'axios';
+import VerifyFileExchange from '@/store/verify/VerifyFileExchange';
 
 const VuexModule = createModule({
   namespaced: 'verify',
@@ -7,37 +7,29 @@ const VuexModule = createModule({
 });
 
 export class VerifyStore extends VuexModule {
-  private files!: FileList;
+  private documentFiles!: FileList;
+  private signatureFiles!: FileList;
+  private publicKeyFiles!: FileList;
   private isVerified = false;
   private verificationResult = '';
+  private errorMessage = '';
 
   @action
   async verifyFile() {
-    if (this.files) {
-      console.log(this.files);
-      const formData = new FormData();
-      for (let i = 0; i < this.files.length; i++) {
-        formData.append(this.files[i].name, this.files[i]);
-      }
+    if (this.documentFiles && this.signatureFiles && this.publicKeyFiles) {
       try {
-        const response = await axios.post(
-          'http://localhost:3000/verify',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'undefined',
-            },
-          }
+        const verifyFileResponse = await VerifyFileExchange.calLVerifyFileApi(
+          this.documentFiles[0],
+          this.signatureFiles[0],
+          this.publicKeyFiles[0]
         );
-        this.verificationResult = response.data.message;
-        this.isVerified = true;
-        console.log(response);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.log(error);
-        } else {
-          console.log(error);
+        if(verifyFileResponse) {
+          this.verificationResult = verifyFileResponse.processFeedback;
+          this.isVerified = true;
         }
+      } catch (error) {
+        console.log(error);
+        this.errorMessage = 'Something went wrong, try again later.';
       }
     }
   }

@@ -1,14 +1,13 @@
 import axios from 'axios';
-import SignFileResponse from '@/store/sign/domain/SignFileResponse';
+import MinisignResponse from '@/store/share/domain/MinisignResponse';
 
 export default class SignFileExchange {
-
   static async callSignFileApi(
     documentFile: File,
     secretKeyFile: File,
     password: string,
     signatureFileName: string
-  ): Promise<SignFileResponse | undefined> {
+  ): Promise<MinisignResponse | undefined> {
     const formData = new FormData();
     formData.append('unsigned-file', documentFile);
     formData.append('secret-key-file', secretKeyFile);
@@ -35,14 +34,16 @@ export default class SignFileExchange {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error);
+        console.log('Axios Error', error);
       } else {
         console.log(error);
       }
     }
   }
 
-  static async callDownloadSignatureFileApi(sessionId: string): Promise<any | undefined> {
+  static async callDownloadSignatureFileApi(
+    sessionId: string
+  ): Promise<any | undefined> {
     try {
       const response = await axios.get(
         'http://localhost:8080/download-files/' + sessionId,
@@ -61,7 +62,7 @@ export default class SignFileExchange {
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error);
+        console.log('Axios Error', error);
       } else {
         console.log(error);
       }

@@ -33,10 +33,9 @@ export class KeysStore extends VuexModule {
         this.isSuccess = true;
         this.serverResponse = response.data;
         downloadFile(response.data, 'minisign-keys.zip');
-        2;
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.log(error);
+          console.log('Axios ', error);
         } else {
           console.log(error);
         }

@@ -16,7 +16,6 @@
     <input
       id="fileElem"
       type="file"
-      accept="image/*"
       class="visually-hidden"
       @change="onFileChange"
     />
@@ -78,17 +77,16 @@ export default class FileUpload extends Vue {
 
 <style scoped lang="scss">
 .dropzone {
-  width: 300px;
-  //height: 200px;
+  max-width: 300px;
   outline: 2px dashed grey; /* the dash box */
   outline-offset: -10px;
   background: #ecf0f9;
   color: dimgray;
-  padding: 30px;
+  padding: 10px 30px;
   text-align: center;
 }
 .dropzone-text {
-  margin-top: 10px;
+  margin-top: 5px;
   margin-bottom: 10px;
 }
 .hightlight {

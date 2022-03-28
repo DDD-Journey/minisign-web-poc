@@ -11,6 +11,7 @@ export class SignStore extends VuexModule {
   private documentFiles!: FileList;
   private secretKeyFiles!: FileList;
   private password = '';
+  private errorMessage = '';
 
   @action
   async signFile() {
@@ -22,22 +23,27 @@ export class SignStore extends VuexModule {
       console.log(this.secretKeyFiles[0]);
 
       const signatureFileName = this.documentFiles[0].name + '.minisig';
-      const signFileResponse = await SignFileExchange.callSignFileApi(
-        this.documentFiles[0],
-        this.secretKeyFiles[0],
-        this.password,
-        signatureFileName
-      );
-      console.log('signFileResponse');
-      console.log(signFileResponse);
-      const sessionId =
-        signFileResponse != undefined ? signFileResponse.sessionId : undefined;
-      if (sessionId) {
-        const downloadFilesResponse =
-          await SignFileExchange.callDownloadSignatureFileApi(sessionId);
-        console.log('DownloadFilesResponse');
-        console.log(downloadFilesResponse);
-        downloadFile(downloadFilesResponse, signatureFileName + '.zip');
+      try {
+        const signFileResponse = await SignFileExchange.callSignFileApi(
+            this.documentFiles[0],
+            this.secretKeyFiles[0],
+            this.password,
+            signatureFileName
+        );
+        console.log('signFileResponse');
+        console.log(signFileResponse);
+        const sessionId =
+            signFileResponse != undefined ? signFileResponse.sessionId : undefined;
+        if (sessionId) {
+          const downloadFilesResponse =
+              await SignFileExchange.callDownloadSignatureFileApi(sessionId);
+          console.log('DownloadFilesResponse');
+          console.log(downloadFilesResponse);
+          downloadFile(downloadFilesResponse, signatureFileName + '.zip');
+        }
+      } catch (error) {
+        console.log(error);
+        this.errorMessage = 'Something went wrong, try again later.';
       }
     }
   }

@@ -5,13 +5,11 @@ import { IncomingForm } from "formidable";
 export function signFile(req: Request, res: Response) {
     console.log('Got body:', req.body);
 
-    const form = new IncomingForm();
+    const form = new IncomingForm({ uploadDir: __dirname + './uploads/' });
+
     form.on('file', (field, file) => {
         console.log('file', file.originalFilename)
     });
-    // form.on('end', () => {
-    //     res.json()
-    // });
     form.on('end', () => {
         res.json()
     });

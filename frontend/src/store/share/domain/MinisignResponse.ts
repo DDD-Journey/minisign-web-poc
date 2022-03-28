@@ -1,4 +1,4 @@
-export default interface SignFileResponse {
+export default interface MinisignResponse {
   sessionId: string;
   exitValue: number;
   exitedGraceful: boolean;

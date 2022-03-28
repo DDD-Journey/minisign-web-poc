@@ -1,7 +1,7 @@
 <template>
   <section class="common-section">
     <h1>Welcome to Minisign-Web PoC</h1>
-    <img src="../assets/letter-576461_1280.png" height="300" />
+    <img src="../assets/letter-576461_1280.png" height="300" alt="signletter"/>
     <p>Choose one of the action below by clicking on it.</p>
     <div class="actionBox">
       <router-link to="/create">Create a key pair</router-link>
