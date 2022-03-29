@@ -46,7 +46,7 @@ export default class SignFileExchange {
   ): Promise<any | undefined> {
     try {
       const response = await axios.get(
-        'http://localhost:8080/download-files/' + sessionId,
+          process.env.BACKEND_URL + '/download-files/' + sessionId,
         {
           headers: {
             accept: 'application/zip',
