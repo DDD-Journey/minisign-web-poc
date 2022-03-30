@@ -13,7 +13,7 @@ export default class VerifyFileExchange {
     formData.append('public-key-file', publicKeyFile);
     try {
       const response = await axios.post(
-          process.env.BACKEND_URL + '/verify-file',
+        process.env.VUE_APP_BACKEND_URL + '/verify-file',
         formData,
         {
           headers: {

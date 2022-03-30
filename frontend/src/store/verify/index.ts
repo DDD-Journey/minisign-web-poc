@@ -23,7 +23,7 @@ export class VerifyStore extends VuexModule {
           this.signatureFiles[0],
           this.publicKeyFiles[0]
         );
-        if(verifyFileResponse) {
+        if (verifyFileResponse) {
           this.verificationResult = verifyFileResponse.processFeedback;
           this.isVerified = true;
         }

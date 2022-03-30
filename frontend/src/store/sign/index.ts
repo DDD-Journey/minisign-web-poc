@@ -25,18 +25,20 @@ export class SignStore extends VuexModule {
       const signatureFileName = this.documentFiles[0].name + '.minisig';
       try {
         const signFileResponse = await SignFileExchange.callSignFileApi(
-            this.documentFiles[0],
-            this.secretKeyFiles[0],
-            this.password,
-            signatureFileName
+          this.documentFiles[0],
+          this.secretKeyFiles[0],
+          this.password,
+          signatureFileName
         );
         console.log('signFileResponse');
         console.log(signFileResponse);
         const sessionId =
-            signFileResponse != undefined ? signFileResponse.sessionId : undefined;
+          signFileResponse != undefined
+            ? signFileResponse.sessionId
+            : undefined;
         if (sessionId) {
           const downloadFilesResponse =
-              await SignFileExchange.callDownloadSignatureFileApi(sessionId);
+            await SignFileExchange.callDownloadSignatureFileApi(sessionId);
           console.log('DownloadFilesResponse');
           console.log(downloadFilesResponse);
           downloadFile(downloadFilesResponse, signatureFileName + '.zip');

@@ -20,9 +20,9 @@
   </aside>
   <section class="usecase-section">
     <h1>Sign a document</h1>
-    <FileUpload v-model="signModule.documentFiles" title="Document" />
+    <FileUpload v-model="signModule.documentFiles" title="Document" id="documentFiles"/>
     <br />
-    <FileUpload v-model="signModule.secretKeyFiles" title="Secret Key" />
+    <FileUpload v-model="signModule.secretKeyFiles" title="Secret Key" id="secrectKexFiles"/>
     <br />
     <Password id="password" v-model="signModule.password" />
     <div class="submit-container">

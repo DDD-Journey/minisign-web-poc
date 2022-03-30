@@ -14,11 +14,11 @@
   </aside>
   <section class="usecase-section">
     <h1>Sign a document</h1>
-    <file-upload v-model="verifyModule.documentFiles" title="Document" />
+    <file-upload v-model="verifyModule.documentFiles" title="Document" id="documentFiles"/>
     <br />
-    <file-upload v-model="verifyModule.signatureFiles" title="Signatur" />
+    <file-upload v-model="verifyModule.signatureFiles" title="Signatur" id="signatureFiles"/>
     <br />
-    <file-upload v-model="verifyModule.publicKeyFiles" title="Public Key" />
+    <file-upload v-model="verifyModule.publicKeyFiles" title="Public Key" id="publicKeyFiles"/>
     <div class="submit-container">
       <Button @click="verifyFile" label="Verify Document" />
     </div>

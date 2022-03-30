@@ -13,7 +13,7 @@ export default class SignFileExchange {
     formData.append('secret-key-file', secretKeyFile);
     try {
       const response = await axios.post(
-        'http://localhost:8080/sign-file',
+        process.env.VUE_APP_BACKEND_URL + '/sign-file',
         formData,
         {
           headers: {
@@ -46,7 +46,7 @@ export default class SignFileExchange {
   ): Promise<any | undefined> {
     try {
       const response = await axios.get(
-          process.env.BACKEND_URL + '/download-files/' + sessionId,
+        process.env.VUE_APP_BACKEND_URL + '/download-files/' + sessionId,
         {
           headers: {
             accept: 'application/zip',
