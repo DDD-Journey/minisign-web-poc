@@ -10,7 +10,10 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   components: {},
   props: {
-    label: String,
+    label: {
+      type: String,
+      required: true
+    },
   },
 })
 export default class Button extends Vue {}

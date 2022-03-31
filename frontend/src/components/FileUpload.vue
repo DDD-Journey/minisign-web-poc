@@ -33,9 +33,18 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   components: {},
   props: {
-    modelValue: FileList,
-    title: String,
-    id: String,
+    modelValue: {
+      type: FileList,
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    id: {
+      type: String,
+      required: true
+    },
   },
 })
 // https://malcoded.com/posts/vue-file-upload-ts/ Good example

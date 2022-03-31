@@ -20,8 +20,14 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   components: {},
   props: {
-    id: String,
-    modelValue: String,
+    id: {
+      type: String,
+      required: true
+    },
+    modelValue: {
+      type: String,
+      required: true
+    },
   },
 })
 export default class Password extends Vue {
