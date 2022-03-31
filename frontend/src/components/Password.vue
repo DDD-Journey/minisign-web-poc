@@ -6,9 +6,11 @@
       :id="id"
       :value="modelValue"
       @input="updateValue"
-      class="pwInput"
+      class="pw-input"
+      required
+      minlength="3"
     />
-    <button @click="switchVisibility" class="showButton">show / hide</button>
+    <button @click="switchVisibility" class="pw-btn-show-hide">show / hide</button>
   </div>
 </template>
 
@@ -37,18 +39,23 @@ export default class Password extends Vue {
 </script>
 
 <style scoped>
-.pwInput {
+.pw-input:valid {
   padding: 8px;
   border: 1px solid lightgray;
   border-radius: 5px;
 }
-.showButton {
+. pw-input:invalid {
+  padding: 8px;
+  border: 1px solid darkred;
+  border-radius: 5px;
+}
+.pw-btn-show-hide {
   margin-left: 2px;
   padding: 8px;
   border: 1px solid lightgray;
   border-radius: 5px;
 }
-.showButton:hover {
+.pw-btn-show-hide:hover {
   background-color: #bfbfbf;
   cursor: pointer;
 }

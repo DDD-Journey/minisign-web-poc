@@ -20,14 +20,24 @@
   </aside>
   <section class="usecase-section">
     <h1>Sign a document</h1>
-    <FileUpload v-model="signModule.documentFiles" title="Document" id="documentFiles"/>
-    <br />
-    <FileUpload v-model="signModule.secretKeyFiles" title="Secret Key" id="secrectKexFiles"/>
-    <br />
-    <Password id="password" v-model="signModule.password" />
-    <div class="submit-container">
-      <Button @click="signFile" label="Sign Document" />
-    </div>
+    <form @submit.prevent="signFile">
+      <FileUpload
+        v-model="signModule.documentFiles"
+        title="Document"
+        id="documentFiles"
+      />
+      <br />
+      <FileUpload
+        v-model="signModule.secretKeyFiles"
+        title="Secret Key"
+        id="secrectKexFiles"
+      />
+      <br />
+      <Password id="password" v-model="signModule.password" />
+      <div class="submit-container">
+        <Button label="Sign Document" />
+      </div>
+    </form>
   </section>
 </template>
 
@@ -49,7 +59,7 @@ import Button from '@/components/Button.vue';
 export default class SignDocumentView extends Vue {
   private signModule = vxm.sign;
 
-  private signFile() {
+  private signFile(event: Event) {
     this.signModule.signFile();
   }
 }

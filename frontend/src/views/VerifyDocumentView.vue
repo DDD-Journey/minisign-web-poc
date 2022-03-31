@@ -14,18 +14,32 @@
   </aside>
   <section class="usecase-section">
     <h1>Sign a document</h1>
-    <file-upload v-model="verifyModule.documentFiles" title="Document" id="documentFiles"/>
-    <br />
-    <file-upload v-model="verifyModule.signatureFiles" title="Signatur" id="signatureFiles"/>
-    <br />
-    <file-upload v-model="verifyModule.publicKeyFiles" title="Public Key" id="publicKeyFiles"/>
-    <div class="submit-container">
-      <Button @click="verifyFile" label="Verify Document" />
-    </div>
-    <div v-if="verifyModule.isVerified">
-      <h2>Result</h2>
-      <p>{{ verifyModule.verificationResult }}</p>
-    </div>
+    <form @submit.prevent="verifyFile">
+      <file-upload
+        v-model="verifyModule.documentFiles"
+        title="Document"
+        id="documentFiles"
+      />
+      <br />
+      <file-upload
+        v-model="verifyModule.signatureFiles"
+        title="Signatur"
+        id="signatureFiles"
+      />
+      <br />
+      <file-upload
+        v-model="verifyModule.publicKeyFiles"
+        title="Public Key"
+        id="publicKeyFiles"
+      />
+      <div class="submit-container">
+        <Button label="Verify Document" />
+      </div>
+      <div v-if="verifyModule.isVerified">
+        <h2>Result</h2>
+        <p>{{ verifyModule.verificationResult }}</p>
+      </div>
+    </form>
   </section>
 </template>
 

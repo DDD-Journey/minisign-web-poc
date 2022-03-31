@@ -18,6 +18,7 @@
       type="file"
       class="visually-hidden"
       @change="onFileChange"
+      required
     />
     <label :for="id" class="dropzone-button"> or, browse files </label>
     <div class="dropzone-filename-box">
@@ -34,7 +35,7 @@ import { Options, Vue } from 'vue-class-component';
   props: {
     modelValue: FileList,
     title: String,
-    id: String
+    id: String,
   },
 })
 // https://malcoded.com/posts/vue-file-upload-ts/ Good example
