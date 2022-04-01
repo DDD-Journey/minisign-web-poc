@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class MinisignServiceResult {
+public class MinisignProcessResult {
 
     private String sessionId;
     private int exitValue;

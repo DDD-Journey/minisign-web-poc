@@ -2,11 +2,16 @@ package org.dddjourney.minisignpocbackend.business.rest;
 
 import com.jayway.jsonpath.JsonPath;
 import lombok.SneakyThrows;
+import org.dddjourney.minisignpocbackend.business.domain.SessionCreator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,11 +24,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,10 +37,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(ZipFileExtractor.class)
 class MinisignControllerTest {
 
+    @MockBean
+    SessionCreator sessionCreator;
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ZipFileExtractor zipFileExtractor;
+
+    String expectedSessionId;
+
+    @BeforeEach
+    void setUp() {
+        expectedSessionId = UUID.randomUUID().toString();
+        when(sessionCreator.createSessionId()).thenReturn(expectedSessionId);
+    }
 
     @SneakyThrows
     @Test
@@ -104,12 +120,14 @@ class MinisignControllerTest {
                 .andReturn();
 
         // and then
-        String sessionId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.sessionId");
+        String retrievedSessionId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.sessionId");
+        assertThat(retrievedSessionId).isEqualTo(expectedSessionId);
 
-        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders.get("/download-files/{session-id}", sessionId))
+        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders.get("/download-files/{session-id}", expectedSessionId))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/zip"))
+                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"minisign_%s.zip\"", expectedSessionId)))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
                 .andReturn().getResponse().getContentAsByteArray();
 
         List<ZipFileExtractor.FileMetaData> fileMetaDataList = zipFileExtractor.extractMetaData(contentAsByteArray);
