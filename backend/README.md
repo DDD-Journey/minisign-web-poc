@@ -6,7 +6,7 @@
 - Exception Handling / Error Responses
 - API Documentation
 - Delete processed files
-- Stabilize flickering tests
+- CORS Security config
 
 ## Hyperlinks
 

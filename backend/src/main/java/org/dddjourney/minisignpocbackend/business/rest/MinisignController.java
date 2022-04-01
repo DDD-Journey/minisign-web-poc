@@ -2,9 +2,9 @@ package org.dddjourney.minisignpocbackend.business.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.dddjourney.minisignpocbackend.business.domain.MinisignDownloadResult;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignDownloadResult;
 import org.dddjourney.minisignpocbackend.business.domain.MinisignService;
-import org.dddjourney.minisignpocbackend.business.domain.MinisignProcessResult;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignProcessResult;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

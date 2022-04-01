@@ -1,4 +1,4 @@
-package org.dddjourney.minisignpocbackend.business.domain;
+package org.dddjourney.minisignpocbackend.business.domain.minisign;
 
 import org.springframework.stereotype.Component;
 

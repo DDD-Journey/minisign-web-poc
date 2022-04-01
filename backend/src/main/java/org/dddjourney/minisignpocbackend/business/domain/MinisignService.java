@@ -3,12 +3,15 @@ package org.dddjourney.minisignpocbackend.business.domain;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.*;
 import org.dddjourney.minisignpocbackend.business.rest.ZipFileCreator;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -95,18 +98,31 @@ public class MinisignService {
                 .build();
     }
 
-    public MinisignDownloadResult downloadCreatedFiles(String sessionId) {
+    public MinisignDownloadResult downloadCreatedFiles(String sessionId) throws IOException {
 
         List<File> files = collectProducedFilesBy(sessionId);
-        ByteArrayOutputStream compressedFilesStream = zipFileCreator.downloadZipFile(files);
-        ByteArrayResource resource = new ByteArrayResource(compressedFilesStream.toByteArray());
-        String fileName = String.format("minisign_%s.zip", sessionId);
 
-        return MinisignDownloadResult.builder()
-                .sessionId(sessionId)
-                .resource(resource)
-                .fileName(fileName)
-                .build();
+        if (files.size() > 1) {
+            ByteArrayOutputStream compressedFilesStream = zipFileCreator.downloadZipFile(files);
+            ByteArrayResource resource = new ByteArrayResource(compressedFilesStream.toByteArray());
+            String fileName = String.format("minisign_%s.zip", sessionId);
+            return MinisignDownloadResult.builder()
+                    .sessionId(sessionId)
+                    .resource(resource)
+                    .fileName(fileName)
+                    .build();
+        } else {
+            File file = files.get(0);
+            ByteArrayResource byteArrayResource = new ByteArrayResource(FileUtils.readFileToByteArray(file));
+
+            return MinisignDownloadResult.builder()
+                    .sessionId(sessionId)
+                    .resource(byteArrayResource)
+                    .fileName(file.getName())
+                    .build();
+        }
+
+
     }
 
     private List<File> collectProducedFilesBy(String sessionId) {

@@ -3,7 +3,7 @@ package org.dddjourney.minisignpocbackend.infrastructure.process;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import org.dddjourney.minisignpocbackend.business.domain.MinisignResult;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignResult;
 
 import java.io.File;
 import java.util.List;

@@ -2,7 +2,7 @@ package org.dddjourney.minisignpocbackend.business.rest;
 
 import com.jayway.jsonpath.JsonPath;
 import lombok.SneakyThrows;
-import org.dddjourney.minisignpocbackend.business.domain.SessionCreator;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.SessionCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +95,6 @@ class MinisignControllerTest {
     void signFile() {
         // given
         MockMultipartFile unsignedFile = buildMockMultipartFile("unsigned-file", "src/test/resources/minisign/test_payload_file.txt");
-        MockMultipartFile signatureFile = buildMockMultipartFile("signature-file", "src/test/resources/minisign/test_payload_file.txt.minisig");
         MockMultipartFile secretKeyFile = buildMockMultipartFile("secret-key-file", "src/test/resources/minisign/minisign_secret_key.key");
         Map<String, List<String>> params = Map.of(
                 "password", List.of("test123"),
@@ -106,7 +105,6 @@ class MinisignControllerTest {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .multipart("/sign-file")
                         .file(unsignedFile)
-                        .file(signatureFile)
                         .file(secretKeyFile)
                         .params(CollectionUtils.toMultiValueMap(params)))
                 .andDo(print())
@@ -126,14 +124,13 @@ class MinisignControllerTest {
         byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders.get("/download-files/{session-id}", expectedSessionId))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"minisign_%s.zip\"", expectedSessionId)))
+                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", "test_payload_file.txt.minisig")))
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
                 .andReturn().getResponse().getContentAsByteArray();
 
-        List<ZipFileExtractor.FileMetaData> fileMetaDataList = zipFileExtractor.extractMetaData(contentAsByteArray);
-
-        assertThat(fileMetaDataList).extracting("fileName").containsExactly("test_payload_file.txt.minisig");
-        assertThat(fileMetaDataList).extracting("fileSize").containsExactly(-1L);
+        String fileContent = new String(contentAsByteArray);
+        assertThat(fileContent).contains("untrusted comment: signature from minisign secret key\n" +
+                "RUQxzvHkRbQZ5bQCPbXARQnzqO5BBu/la4iBk7OraK3qHq6tLdGmHfwStMOba1ssqElwM2FeUMm58mMc4mH1ScYvpZ13d900Sgs=");
     }
 
     @Test

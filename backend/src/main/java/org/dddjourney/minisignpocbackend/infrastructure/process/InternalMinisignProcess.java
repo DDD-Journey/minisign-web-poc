@@ -2,7 +2,7 @@ package org.dddjourney.minisignpocbackend.infrastructure.process;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.dddjourney.minisignpocbackend.business.domain.Minisign;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.Minisign;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

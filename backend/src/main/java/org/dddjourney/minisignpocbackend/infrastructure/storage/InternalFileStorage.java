@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.dddjourney.minisignpocbackend.business.domain.FileStorage;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.FileStorage;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
