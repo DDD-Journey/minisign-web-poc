@@ -59,7 +59,7 @@ import Button from '@/components/Button.vue';
 export default class SignDocumentView extends Vue {
   private signModule = vxm.sign;
 
-  private signFile(event: Event) {
+  private signFile() {
     this.signModule.signFile();
   }
 }

@@ -1,6 +1,7 @@
 import { createModule, action } from 'vuex-class-component';
 import { downloadFile } from '@/store/share/downloadFile';
 import SignFileExchange from '@/store/sign/SignFileExchange';
+import DownloadExchange from "@/store/share/DownloadExchange";
 
 const VuexModule = createModule({
   namespaced: 'sign',
@@ -38,10 +39,10 @@ export class SignStore extends VuexModule {
             : undefined;
         if (sessionId) {
           const downloadFilesResponse =
-            await SignFileExchange.callDownloadSignatureFileApi(sessionId);
+            await DownloadExchange.callDownloadSignatureFileApi(sessionId);
           console.log('DownloadFilesResponse');
           console.log(downloadFilesResponse);
-          downloadFile(downloadFilesResponse, signatureFileName + '.zip');
+          downloadFile(downloadFilesResponse, signatureFileName);
         }
       } catch (error) {
         console.log(error);

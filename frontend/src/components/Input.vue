@@ -1,18 +1,15 @@
 <template>
   <div>
-    <label :for="id">Password: </label>
+    <label :for="id">{{ label }}: </label>
     <input
-      :type="passwordFieldType"
+      type="text"
       :id="id"
       :value="modelValue"
       @input="updateValue"
-      class="pw-input"
+      class="txt-input"
       required
       minlength="3"
     />
-    <button @click="switchVisibility" class="pw-btn-show-hide">
-      show / hide
-    </button>
   </div>
 </template>
 
@@ -30,16 +27,13 @@ import { Options, Vue } from 'vue-class-component';
       type: String,
       required: true,
     },
+    label: {
+      type: String,
+      required: true,
+    },
   },
 })
 export default class Password extends Vue {
-  private passwordFieldType = 'password';
-
-  private switchVisibility() {
-    this.passwordFieldType =
-      this.passwordFieldType === 'password' ? 'text' : 'password';
-  }
-
   private updateValue(event: any) {
     this.$emit('update:modelValue', event.target.value);
   }
@@ -47,24 +41,14 @@ export default class Password extends Vue {
 </script>
 
 <style scoped>
-.pw-input {
+.txt-input {
   padding: 8px;
   border: 1px solid lightgray;
   border-radius: 5px;
 }
-.pw-input:focus:invalid {
+.txt-input:focus:invalid {
   padding: 8px;
   border: 1px solid darkred;
   border-radius: 5px;
-}
-.pw-btn-show-hide {
-  margin-left: 2px;
-  padding: 8px;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-}
-.pw-btn-show-hide:hover {
-  background-color: #bfbfbf;
-  cursor: pointer;
 }
 </style>

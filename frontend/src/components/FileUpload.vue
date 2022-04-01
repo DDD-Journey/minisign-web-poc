@@ -35,15 +35,15 @@ import { Options, Vue } from 'vue-class-component';
   props: {
     modelValue: {
       type: FileList,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     id: {
       type: String,
-      required: true
+      required: true,
     },
   },
 })

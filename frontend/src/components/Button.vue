@@ -12,7 +12,7 @@ import { Options, Vue } from 'vue-class-component';
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
   },
 })

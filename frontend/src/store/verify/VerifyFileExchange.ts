@@ -17,8 +17,8 @@ export default class VerifyFileExchange {
         formData,
         {
           headers: {
-            'Content-Type': 'undefined',
-            accept: '*/*',
+            'Content-Type': 'multipart/form-data\'',
+            accept: 'application/json',
           },
         }
       );
