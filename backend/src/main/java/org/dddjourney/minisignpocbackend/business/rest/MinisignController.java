@@ -27,7 +27,6 @@ public class MinisignController {
         return ResponseEntity.ok(minisignService.version());
     }
 
-    @CrossOrigin(origins = "http://localhost:8082")
     @PostMapping(
             path = "/verify-file",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -48,7 +47,6 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "http://localhost:8082")
     @PostMapping(
             path = "/sign-file",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -85,7 +83,6 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = "http://localhost:8082")
     @SneakyThrows
     @GetMapping(
             path = "download-files/{session-id}",
