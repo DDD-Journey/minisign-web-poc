@@ -77,7 +77,8 @@ class MinisignControllerTest {
                         .multipart("/verify-file")
                         .file(signedFile)
                         .file(signatureFile)
-                        .file(publicKeyFile))
+                        .file(publicKeyFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.sessionId").isNotEmpty())
@@ -88,6 +89,45 @@ class MinisignControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.processFeedback")
                         .value("Signature and comment signature verifiedTrusted comment: timestamp:1645981228\tfile:test_payload_file.txt\thashed"));
 
+    }
+
+    @Test
+    @SneakyThrows
+    void createKeys() {
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/create-keys")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{ \"password\": \"any_password!\", \"fileName\": \"create_key_test_case\"}"))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.sessionId").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.exitValue").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.exitedGraceful").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.processError").isEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdFiles").isNotEmpty())
+                .andReturn();
+
+        String retrievedSessionId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.sessionId");
+        assertThat(retrievedSessionId).isEqualTo(expectedSessionId);
+
+        byte[] contentAsByteArray = mockMvc
+                .perform(MockMvcRequestBuilders
+                        .get("/download-files/{session-id}", expectedSessionId)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"minisign_%s.zip\"", retrievedSessionId)))
+                .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+                .andReturn().getResponse().getContentAsByteArray();
+
+        List<ZipFileExtractor.FileMetaData> fileMetaDataList = zipFileExtractor.extractMetaData(contentAsByteArray);
+
+        assertThat(fileMetaDataList).extracting("fileName").containsExactlyInAnyOrder(
+                "create_key_test_case.key",
+                "create_key_test_case.pub"
+        );
     }
 
     @Test
@@ -106,6 +146,7 @@ class MinisignControllerTest {
                         .multipart("/sign-file")
                         .file(unsignedFile)
                         .file(secretKeyFile)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .params(CollectionUtils.toMultiValueMap(params)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -121,7 +162,9 @@ class MinisignControllerTest {
         String retrievedSessionId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.sessionId");
         assertThat(retrievedSessionId).isEqualTo(expectedSessionId);
 
-        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders.get("/download-files/{session-id}", expectedSessionId))
+        byte[] contentAsByteArray = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/download-files/{session-id}", expectedSessionId)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", "test_payload_file.txt.minisig")))

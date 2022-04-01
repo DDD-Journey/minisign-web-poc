@@ -3,6 +3,7 @@ package org.dddjourney.minisignpocbackend.infrastructure.process;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.dddjourney.minisignpocbackend.business.domain.minisign.Minisign;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignResult;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -89,6 +90,38 @@ public class InternalMinisignProcess implements Minisign {
                 .processFeedback(processFeedbackBuffer.toString())
                 .processError(processErrorBuffer.toString())
                 .createdFile(signatureFile)
+                .build();
+
+        log.debug("Process result: {}", internalMinisignResult);
+        return internalMinisignResult;
+    }
+
+    @Override
+    @SneakyThrows
+    public InternalMinisignResult createKeys(File pubKeyFile, String password, File secretKeyFile) {
+        String[] command = {"minisign", "-G", "-s", secretKeyFile.getAbsolutePath(), "-p", pubKeyFile.getAbsolutePath()};
+
+        log.debug("Process command {}", Arrays.toString(command));
+
+        Process process = new ProcessBuilder(command)
+                .redirectErrorStream(true)
+                .start();
+
+        StringBuffer processFeedbackBuffer = bufferProcessFeedback(process);
+        StringBuffer processErrorBuffer = bufferProcessError(process);
+
+        writeTextToTerminal(password, process.getOutputStream());
+        writeTextToTerminal(password, process.getOutputStream());
+
+        boolean exitedGraceful = waitForCompletion(process);
+
+        InternalMinisignResult internalMinisignResult = InternalMinisignResult.builder()
+                .exitValue(process.exitValue())
+                .exitedGraceful(exitedGraceful)
+                .processFeedback(processFeedbackBuffer.toString())
+                .processError(processErrorBuffer.toString())
+                .createdFile(secretKeyFile)
+                .createdFile(pubKeyFile)
                 .build();
 
         log.debug("Process result: {}", internalMinisignResult);

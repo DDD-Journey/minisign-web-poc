@@ -9,7 +9,7 @@ public interface FileStorage {
 
     Path createTempDirectoryFor(String sessionId);
 
-    void moveToPermanentFolderFor(File signatureFilePath, String sessionId);
+    void moveToPermanentFolderFor(String sessionId, File... filesToMove);
 
     File[] findFilesInDownloadFolder(String sessionId);
 }

@@ -2,10 +2,10 @@ package org.dddjourney.minisignpocbackend.infrastructure.process;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +30,12 @@ class InternalMinisignProcessTest {
     @Test
     void runVersion() {
         // when
-        InternalMinisignResult internalMinisignResult = subject.version();
+        InternalMinisignResult minisignResult = subject.version();
 
         // then
-        assertThat(internalMinisignResult.getProcessFeedback()).contains("minisign 0.10");
-        assertThat(internalMinisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
-        assertThat(internalMinisignResult.isExitedGraceful()).isTrue();
+        assertThat(minisignResult.getProcessFeedback()).contains("minisign 0.10");
+        assertThat(minisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(minisignResult.isExitedGraceful()).isTrue();
     }
 
     @Test
@@ -46,12 +46,12 @@ class InternalMinisignProcessTest {
         String publicKeyFile = "src/test/resources/minisign/minisign_public_key.pub";
 
         // when
-        InternalMinisignResult internalMinisignResult = subject.verifyFile(signedFile, signatureFile, publicKeyFile);
+        InternalMinisignResult minisignResult = subject.verifyFile(signedFile, signatureFile, publicKeyFile);
 
         // then
-        assertThat(internalMinisignResult.getProcessFeedback()).contains("Signature and comment signature verified");
-        assertThat(internalMinisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
-        assertThat(internalMinisignResult.isExitedGraceful()).isTrue();
+        assertThat(minisignResult.getProcessFeedback()).contains("Signature and comment signature verified");
+        assertThat(minisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(minisignResult.isExitedGraceful()).isTrue();
     }
 
     @Test
@@ -63,13 +63,32 @@ class InternalMinisignProcessTest {
         File signatureFile = buildFile(tempDir, "test_payload_file.txt.minisig");
 
         // when
-        InternalMinisignResult internalMinisignResult = subject.signFile(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
+        InternalMinisignResult minisignResult = subject.signFile(TEST_PASSWORD, payloadFile, secretKeyFile, signatureFile);
 
         // then
-        assertThat(internalMinisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
-        assertThat(internalMinisignResult.isExitedGraceful()).isTrue();
+        assertThat(minisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(minisignResult.isExitedGraceful()).isTrue();
         assertThat(readFile(signatureFile)).contains("file:test_payload_file.txt");
-        assertThat(internalMinisignResult.getProcessFeedback()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
+        assertThat(minisignResult.getProcessFeedback()).isEqualTo("Password: Deriving a key from the password and decrypting the secret key... done");
+    }
+
+    @Test
+    void createKeys(@TempDir Path tempDir) {
+        // given
+        String pubKeyFileName = "test_key_file.pub";
+        String secretKeyFileName = "test_key_file.key";
+        File pubKeyFile = buildFile(tempDir, pubKeyFileName);
+        File secretKeyFile = buildFile(tempDir, secretKeyFileName);
+
+        // when
+        InternalMinisignResult minisignResult = subject.createKeys(pubKeyFile, "test654!", secretKeyFile);
+
+        // then
+        assertThat(minisignResult.getExitValue()).isEqualTo(EXIT_VALUE_SUCCESS);
+        assertThat(minisignResult.isExitedGraceful()).isTrue();
+        assertThat(minisignResult.getCreatedFiles())
+                .extracting(File::getName)
+                .containsExactlyInAnyOrder(pubKeyFileName, secretKeyFileName);
     }
 
     private File buildFile(Path tempDir, String fileName) {

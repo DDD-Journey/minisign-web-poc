@@ -72,10 +72,30 @@ public class MinisignService {
                 signatureFile
         );
 
-        fileStorage.moveToPermanentFolderFor(signatureFile, sessionId);
+        fileStorage.moveToPermanentFolderFor(sessionId, signatureFile);
 
         MinisignProcessResult serviceResult = mapToResult(sessionId, minisignResult);
         log.debug("End - Sign file with process result '{}'", serviceResult);
+        return serviceResult;
+    }
+
+    public MinisignProcessResult createKeys(String password, String fileName) {
+        String sessionId = sessionCreator.createSessionId();
+        log.debug("Start - Create keys with fileName '{}' and sessionId '{}'", fileName, sessionId);
+
+        Path tempDirectory = fileStorage.createTempDirectoryFor(sessionId);
+
+        File pubKeyFile = buildPath(tempDirectory, fileName + ".pub").toFile();
+        File secretKeyFile = buildPath(tempDirectory, fileName + ".key").toFile();
+        MinisignResult minisignResult = minisign.createKeys(pubKeyFile, password, secretKeyFile);
+
+        fileStorage.moveToPermanentFolderFor(
+                sessionId,
+                minisignResult.getCreatedFiles().toArray(new File[0])
+        );
+
+        MinisignProcessResult serviceResult = mapToResult(sessionId, minisignResult);
+        log.debug("End - Create keys with process result '{}'", serviceResult);
         return serviceResult;
     }
 
@@ -100,21 +120,24 @@ public class MinisignService {
 
     public MinisignDownloadResult downloadCreatedFiles(String sessionId) throws IOException {
 
+        log.debug("Start - Download created files with sessionId '{}'", sessionId);
         List<File> files = collectProducedFilesBy(sessionId);
 
         if (files.size() > 1) {
             ByteArrayOutputStream compressedFilesStream = zipFileCreator.downloadZipFile(files);
             ByteArrayResource resource = new ByteArrayResource(compressedFilesStream.toByteArray());
             String fileName = String.format("minisign_%s.zip", sessionId);
+            log.debug("End - Download zip file for sessionId '{}'", sessionId);
             return MinisignDownloadResult.builder()
                     .sessionId(sessionId)
                     .resource(resource)
                     .fileName(fileName)
                     .build();
+
         } else {
             File file = files.get(0);
             ByteArrayResource byteArrayResource = new ByteArrayResource(FileUtils.readFileToByteArray(file));
-
+            log.debug("End - Download single file '{}' for sessionId '{}'", file.getName(), sessionId);
             return MinisignDownloadResult.builder()
                     .sessionId(sessionId)
                     .resource(byteArrayResource)

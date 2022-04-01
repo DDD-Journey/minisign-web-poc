@@ -2,8 +2,8 @@ package org.dddjourney.minisignpocbackend.business.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignDownloadResult;
 import org.dddjourney.minisignpocbackend.business.domain.MinisignService;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignDownloadResult;
 import org.dddjourney.minisignpocbackend.business.domain.minisign.MinisignProcessResult;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,13 +19,20 @@ public class MinisignController {
 
     private final MinisignService minisignService;
 
-    @GetMapping("/version")
+    @GetMapping(
+            path = "/version",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<String> getMinisignVersion() {
         return ResponseEntity.ok(minisignService.version());
     }
 
     @CrossOrigin(origins = "http://localhost:8082")
-    @PostMapping(path = "/verify-file", consumes = {"multipart/form-data"})
+    @PostMapping(
+            path = "/verify-file",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ProcessResultResource> verifyFile(
             @RequestParam("signed-file") MultipartFile signedFile,
             @RequestParam("signature-file") MultipartFile signatureFile,
@@ -42,7 +49,11 @@ public class MinisignController {
     }
 
     @CrossOrigin(origins = "http://localhost:8082")
-    @PostMapping(path = "/sign-file", consumes = {"multipart/form-data"})
+    @PostMapping(
+            path = "/sign-file",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<ProcessResultResource> signFile(
             @RequestParam("password") String password,
             @RequestParam("unsigned-file") MultipartFile unsignedFile,
@@ -59,9 +70,27 @@ public class MinisignController {
         return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
     }
 
+    @PostMapping(
+            path = "/create-keys",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProcessResultResource> createKeys(
+            @RequestBody CreateKeysRequestResource requestResource) {
+
+        MinisignProcessResult serviceResult = minisignService.createKeys(
+                requestResource.getPassword(),
+                requestResource.getFileName()
+        );
+        return new ResponseEntity<>(mapToProcessResultResource(serviceResult), HttpStatus.CREATED);
+    }
+
     @CrossOrigin(origins = "http://localhost:8082")
     @SneakyThrows
-    @GetMapping(path = "download-files/{session-id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(
+            path = "download-files/{session-id}",
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
     public ResponseEntity<Resource> downloadFiles(@PathVariable("session-id") String sessionId) {
 
         MinisignDownloadResult downloadResult = minisignService.downloadCreatedFiles(sessionId);

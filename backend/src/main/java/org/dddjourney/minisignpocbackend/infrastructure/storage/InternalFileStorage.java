@@ -11,6 +11,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -32,8 +36,14 @@ public class InternalFileStorage implements FileStorage {
         return Files.createDirectories(path);
     }
 
-    public void moveToPermanentFolderFor(File file, String sessionId) {
-        log.debug("Start - Moving file from '{}'", file.getAbsolutePath());
+    @Override
+    public void moveToPermanentFolderFor(String sessionId, File... filesToMove) {
+
+        Set<String> filePaths = Arrays.stream(filesToMove)
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toSet());
+
+        log.debug("Start - Moving file from '{}'", filePaths);
 
         Path downloadFolderPath = Paths.get(properties.getDownloadFolder(), sessionId);
 
@@ -41,19 +51,29 @@ public class InternalFileStorage implements FileStorage {
             throw new IllegalStateException("Creating folder " + downloadFolderPath.toAbsolutePath() + " was not successful!");
         }
 
-        File destinationFile = Paths.get(downloadFolderPath.toString(), file.getName()).toFile();
+        List<File> destinationFiles = Arrays.stream(filesToMove)
+                .map(file -> moveFile(downloadFolderPath, file))
+                .toList();
 
+        Set<String> paths = destinationFiles.stream()
+                .map(File::getAbsolutePath)
+                .collect(Collectors.toSet());
+
+        log.debug("End - Moving files to '{}'", paths);
+    }
+
+    private File moveFile(Path downloadFolderPath, File file) {
+        File destinationFile = Paths.get(downloadFolderPath.toString(), file.getName()).toFile();
         if (!file.renameTo(destinationFile)) {
             throw new IllegalStateException("Move file to " + destinationFile.getAbsolutePath() + " was not successful!");
         }
-
-        log.debug("End - Moving file to '{}'", destinationFile.getAbsolutePath());
+        return destinationFile;
     }
 
     @Override
     public File[] findFilesInDownloadFolder(String sessionId) {
         File directory = Paths.get(properties.getDownloadFolder(), sessionId).toFile();
-        if(!directory.exists() || !directory.isDirectory()) {
+        if (!directory.exists() || !directory.isDirectory()) {
             throw new IllegalArgumentException("Folder doesn't exists: " + directory.getAbsolutePath());
         }
 
