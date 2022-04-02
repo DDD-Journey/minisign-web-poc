@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.dddjourney.minisignpocbackend.business.domain.minisign.*;
-import org.dddjourney.minisignpocbackend.business.rest.ZipFileCreator;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,7 +24,6 @@ public class MinisignService {
     private final Minisign minisign;
     private final FileStorage fileStorage;
     private final SessionCreator sessionCreator;
-    private final ZipFileCreator zipFileCreator;
 
     public String version() {
         return minisign.version().getProcessFeedback();
@@ -49,6 +46,7 @@ public class MinisignService {
                 publicKeyFile.getCanonicalPath()
         );
 
+        fileStorage.delete(signedFile, signatureFile, publicKeyFile);
         MinisignProcessResult serviceResult = mapToResult(sessionId, minisignResult);
         log.debug("End - Verify file with process result '{}'", serviceResult);
         return serviceResult;
@@ -63,6 +61,7 @@ public class MinisignService {
 
         File unsignedFile = fileStorage.writeTempFileTo(unsignedFileContent, buildPath(tempDirectory, "/unsigned-file"));
         File secretKeyFile = fileStorage.writeTempFileTo(secretKeyFileContent, buildPath(tempDirectory, "/secret-key-file"));
+
         File signatureFile = buildPath(tempDirectory, signatureFileName).toFile();
 
         MinisignResult minisignResult = minisign.signFile(
@@ -73,6 +72,7 @@ public class MinisignService {
         );
 
         fileStorage.moveToPermanentFolderFor(sessionId, signatureFile);
+        fileStorage.delete(unsignedFile, secretKeyFile);
 
         MinisignProcessResult serviceResult = mapToResult(sessionId, minisignResult);
         log.debug("End - Sign file with process result '{}'", serviceResult);
@@ -121,12 +121,20 @@ public class MinisignService {
     public MinisignDownloadResult downloadCreatedFiles(String sessionId) throws IOException {
 
         log.debug("Start - Download created files with sessionId '{}'", sessionId);
-        List<File> files = collectProducedFilesBy(sessionId);
+        File[] files = collectProducedFilesBy(sessionId);
 
-        if (files.size() > 1) {
-            ByteArrayOutputStream compressedFilesStream = zipFileCreator.downloadZipFile(files);
+        if (ArrayUtils.isEmpty(files)) {
+            log.error("No files found for sessionId '{}'", sessionId);
+            return MinisignDownloadResult.builder()
+                    .sessionId(sessionId)
+                    .build();
+        }
+
+        if (ArrayUtils.getLength(files) > 1) {
+            ByteArrayOutputStream compressedFilesStream = fileStorage.createZipFileWith(files);
             ByteArrayResource resource = new ByteArrayResource(compressedFilesStream.toByteArray());
             String fileName = String.format("minisign_%s.zip", sessionId);
+            cleanUpDownloads(sessionId, files);
             log.debug("End - Download zip file for sessionId '{}'", sessionId);
             return MinisignDownloadResult.builder()
                     .sessionId(sessionId)
@@ -135,21 +143,27 @@ public class MinisignService {
                     .build();
 
         } else {
-            File file = files.get(0);
+            File file = files[0];
             ByteArrayResource byteArrayResource = new ByteArrayResource(FileUtils.readFileToByteArray(file));
+            cleanUpDownloads(sessionId, files);
             log.debug("End - Download single file '{}' for sessionId '{}'", file.getName(), sessionId);
             return MinisignDownloadResult.builder()
                     .sessionId(sessionId)
                     .resource(byteArrayResource)
                     .fileName(file.getName())
                     .build();
-        }
 
+        }
 
     }
 
-    private List<File> collectProducedFilesBy(String sessionId) {
+    private void cleanUpDownloads(String sessionId, File[] files) {
+        fileStorage.delete(files);
+        fileStorage.deleteDownloadFolder(sessionId);
+    }
+
+    private File[] collectProducedFilesBy(String sessionId) {
         log.debug("Start - Finding produced files by sessionId '{}'", sessionId);
-        return Arrays.asList(fileStorage.findFilesInDownloadFolder(sessionId));
+        return fileStorage.findFilesInDownloadFolder(sessionId);
     }
 }
