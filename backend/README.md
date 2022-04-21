@@ -36,3 +36,4 @@ minisign -Vm test_payload_file.txt -p minisign_public_key.pub
 - [Minisign](https://jedisct1.github.io/minisign/)
 - [File sample project](https://frontbackend.com/spring-boot/spring-boot-upload-file-to-filesystem)
 - [Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker)
+- [Libsodium - Bindings for other languages](https://libsodium.gitbook.io/doc/bindings_for_other_languages)
