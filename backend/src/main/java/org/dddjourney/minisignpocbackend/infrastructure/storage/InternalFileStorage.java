@@ -5,8 +5,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.dddjourney.minisignpocbackend.business.domain.minisign.FileStorage;
+import org.dddjourney.minisignpocbackend.business.domain.minisign.ZipFileCreator;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,9 +24,11 @@ import java.util.stream.Collectors;
 public class InternalFileStorage implements FileStorage {
 
     private final FileStorageProperties properties;
+    private final ZipFileCreator zipFileCreator;
 
     @SneakyThrows
     public File writeTempFileTo(byte[] signedFileContent, Path path) {
+        log.debug("About to write temp file '{}'", path);
         File signedFile = path.toFile();
         FileUtils.writeByteArrayToFile(signedFile, signedFileContent);
         return signedFile;
@@ -32,6 +36,7 @@ public class InternalFileStorage implements FileStorage {
 
     @SneakyThrows
     public Path createTempDirectoryFor(String sessionId) {
+        log.debug("About to create temp folder for sessionId '{}'", sessionId);
         Path path = Paths.get(FileUtils.getTempDirectory().getAbsolutePath(), sessionId);
         return Files.createDirectories(path);
     }
@@ -80,6 +85,26 @@ public class InternalFileStorage implements FileStorage {
         File[] files = directory.listFiles();
         log.debug("'{}' files found in folder.", files != null ? files.length : 0);
         return files;
+    }
+
+    @Override
+    public void deleteDownloadFolder(String sessionId) {
+        File directory = Paths.get(properties.getDownloadFolder(), sessionId).toFile();
+        if (directory.exists() && directory.isDirectory()) {
+            log.debug("Delete download directory '{}'.", directory.getName());
+            directory.delete();
+        }
+
+    }
+
+    @Override
+    public ByteArrayOutputStream createZipFileWith(File... files) {
+        return zipFileCreator.createZipFileWith(files);
+    }
+
+    @Override
+    public void delete(File... files) {
+
     }
 
 }
